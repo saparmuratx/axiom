@@ -1,4 +1,4 @@
-from typing import Any, Optional, List, Dict
+from typing import Any, List, Dict
 
 from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship, Mapped
 from sqlalchemy import ForeignKey, String, Text, UniqueConstraint, UUID
