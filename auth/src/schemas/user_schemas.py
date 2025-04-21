@@ -13,13 +13,13 @@ class UserCreateSchema(BaseModel):
     password: str
 
 
-class UserCreateResponseSchema(BaseModel):
+class UserCreateResponseSchema(BaseModel, UUIDTimeStampMixin):
     model_config = ConfigDict(from_attributes=True)
 
     email: EmailStr
-    password: str
-    is_active: boolean
-    role_id: str
+    # password: str
+    is_active: boolean | None
+    role_id: str | None
 
 
 class UserUpdateSchema(BaseModel):
@@ -27,7 +27,7 @@ class UserUpdateSchema(BaseModel):
     role_id: str
 
 
-class UserSchema(UUIDTimeStampMixin):
+class UserSchema(BaseModel, UUIDTimeStampMixin):
     email: EmailStr
     is_active: boolean
     role: RoleSchema
@@ -38,4 +38,3 @@ class UserInlineSchema(UUIDTimeStampMixin):
     email: EmailStr
     is_active: boolean
     role: RoleSchema
-

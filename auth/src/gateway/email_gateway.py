@@ -114,6 +114,6 @@ class EmailGateway:
 if __name__ == "__main__":
     email_gateway = EmailGateway()
 
-    email_gateway.send_email_confirmation(
-        "testmail@gmail.com", "https://godotengine.org/assets/press/icon_color.png"
+    email_gateway.send_message(
+        "devbekcoder@gmail.com", "Activate Your Account", "this is the messsage go"
     )

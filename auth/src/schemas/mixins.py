@@ -4,6 +4,6 @@ from pydantic.types import UUID4
 
 
 class UUIDTimeStampMixin:
-    id: UUID4
-    created_at: datetime
-    updated_at: datetime
+    id: UUID4 | None
+    created_at: str | None
+    updated_at: str | None
