@@ -28,12 +28,15 @@ class UserRepository:
 
         return [UserSchema.model_validate(user) for user in users]
 
-    def create(self, data: UserCreateSchema):
+    def create(self, data: UserCreateSchema) -> UserCreateResponseSchema:
         user = User(**data.model_dump())
 
-        print(user.to_dict())
+        self.session.add(user)
 
-        return UserCreateResponseSchema.model_validate(user)
+        res = UserCreateResponseSchema.model_validate(user)
+        res._object = user
+
+        return res
 
     def update(self, id, data: UserUpdateSchema):
         user = self._get_by_id(id)

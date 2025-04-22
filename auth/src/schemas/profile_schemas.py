@@ -1,17 +1,30 @@
 from pydantic import BaseModel, ConfigDict
 from pydantic.types import UUID4
 
-from src.schemas.mixins import UUIDTimeStampMixin
+from src.schemas.mixins import DBObjectMixin, UUIDTimeStampMixin
+
 
 class ProfileInlineSchema(BaseModel, UUIDTimeStampMixin):
-    first_name: str
-    last_name: str
-    phone_number: str
+    model_config = ConfigDict(from_attributes=True)
+
+    first_name: str | None
+    last_name: str | None
+    phone_number: str | None
 
 
-class ProfileSchema(BaseModel, UUIDTimeStampMixin):
-    first_name: str
-    last_name: str
-    phone_number: str
-    user_id: UUID4
+class ProfileSchema(BaseModel, UUIDTimeStampMixin, DBObjectMixin):
+    model_config = ConfigDict(from_attributes=True)
 
+    first_name: str | None
+    last_name: str | None
+    phone_number: str | None
+    user_id: UUID4 | None
+
+
+class ProfileCreateSchema(BaseModel, DBObjectMixin):
+    model_config = ConfigDict(from_attributes=True)
+
+    first_name: str | None = None
+    last_name: str | None = None
+    phone_number: str | None = None
+    user_id: UUID4 | None

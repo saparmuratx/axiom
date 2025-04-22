@@ -1,15 +1,21 @@
 from src.config import settings
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
+
+
+def get_session():
+    with Session(create_engine(settings.DATABASE_URL)) as session:
+        yield session
 
 
 class UnitOfWork:
     def __init__(self):
-        self.session_maker = sessionmaker(bind=create_engine(settings.DATABASE_URL))
+        # self.session_maker = sessionmaker(bind=create_engine(settings.DATABASE_URL))
+        self.session_maker = get_session
 
     def __enter__(self):
-        self.session = self.session_maker()
+        self.session = next(self.session_maker())
 
         return self
 

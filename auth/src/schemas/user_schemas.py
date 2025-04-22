@@ -1,8 +1,8 @@
 from xmlrpc.client import Boolean, boolean
 from pydantic import BaseModel, EmailStr, ConfigDict
 
-from src.schemas.mixins import UUIDTimeStampMixin
-from src.schemas.role_shchemas import RoleSchema
+from src.schemas.mixins import DBObjectMixin, UUIDTimeStampMixin
+from src.schemas.role_schemas import RoleSchema
 from src.schemas.profile_schemas import ProfileInlineSchema
 
 
@@ -13,7 +13,7 @@ class UserCreateSchema(BaseModel):
     password: str
 
 
-class UserCreateResponseSchema(BaseModel, UUIDTimeStampMixin):
+class UserCreateResponseSchema(BaseModel, UUIDTimeStampMixin, DBObjectMixin):
     model_config = ConfigDict(from_attributes=True)
 
     email: EmailStr
@@ -28,10 +28,12 @@ class UserUpdateSchema(BaseModel):
 
 
 class UserSchema(BaseModel, UUIDTimeStampMixin):
+    model_config = ConfigDict(from_attributes=True)
+
     email: EmailStr
     is_active: boolean
-    role: RoleSchema
-    profile: ProfileInlineSchema
+    role: RoleSchema | None
+    profile: ProfileInlineSchema | None
 
 
 class UserInlineSchema(UUIDTimeStampMixin):
