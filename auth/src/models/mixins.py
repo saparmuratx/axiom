@@ -1,13 +1,9 @@
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import Column, String, DateTime, UUID, Uuid, inspect
+from sqlalchemy import DateTime, UUID, Uuid, inspect
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
-
-
-def generate_uuid():
-    return str(uuid4())
 
 
 class BaseModelMixin:

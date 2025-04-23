@@ -2,7 +2,7 @@ from typing import Union
 
 from fastapi import FastAPI
 
-from src.api.registration import register_router
+from src.api.registration_api import register_router
 
 app = FastAPI()
 

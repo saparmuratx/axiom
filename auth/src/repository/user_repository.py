@@ -7,7 +7,7 @@ from src.schemas.user_schemas import (
     UserUpdateSchema,
     UserCreateResponseSchema,
 )
-from src.repository.models import User
+from src.models.models import User
 
 
 class UserRepository:
@@ -23,7 +23,7 @@ class UserRepository:
         user = self._get_by_id(id)
         return UserSchema.model_validate(user)
 
-    def list(self, limit: int = None, **filters) -> List[UserCreateSchema]:
+    def list(self, limit = None, **filters) -> List[UserSchema]:
         users = self.session.query(User).filter(**filters).all()
 
         return [UserSchema.model_validate(user) for user in users]
@@ -41,7 +41,7 @@ class UserRepository:
     def update(self, id, data: UserUpdateSchema):
         user = self._get_by_id(id)
 
-        for attr, value in data.items():
+        for attr, value in data.model_dump().items():
             setattr(user, attr, value)
 
         return UserCreateSchema.model_validate(user)

@@ -5,7 +5,7 @@ from sqlalchemy import ForeignKey, String, Text, UniqueConstraint, UUID, event
 from sqlalchemy.dialects.postgresql import JSONB
 
 from src.repository.unit_of_work import get_session
-from src.repository.mixins import BaseModelMixin, SerializerMixin
+from src.models.mixins import BaseModelMixin, SerializerMixin
 from src.config import settings
 
 

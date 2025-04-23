@@ -7,8 +7,7 @@ from sqlalchemy import create_engine
 from alembic import context
 
 from src.config import settings
-from src.repository.models import Base
-
+from src.models.models import Base
 
 
 # this is the Alembic Config object, which provides
@@ -28,6 +27,7 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
 
 def get_database_url():
     # Read environment variable (default to test DB if not set)
@@ -74,9 +74,7 @@ def run_migrations_online() -> None:
     connectable = create_engine(get_database_url())
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

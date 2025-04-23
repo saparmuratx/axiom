@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.repository.models import Profile
+from src.models.models import Profile
 from src.schemas.profile_schemas import ProfileCreateSchema
 
 
