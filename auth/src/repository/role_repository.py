@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.models.models import Role
+from src.models.auth_models import Role
 from src.schemas.role_schemas import RoleSchema
 
 

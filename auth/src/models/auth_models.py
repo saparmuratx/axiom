@@ -1,4 +1,4 @@
-from typing import Any, List, Dict
+from typing import Any, Dict
 
 from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship, Mapped, Session
 from sqlalchemy import ForeignKey, String, Text, UniqueConstraint, UUID, event
@@ -6,7 +6,6 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 from src.repository.unit_of_work import get_session
 from src.models.mixins import BaseModelMixin, SerializerMixin
-from src.config import settings
 
 
 class Base(DeclarativeBase):
@@ -47,7 +46,7 @@ class Role(Base, BaseModelMixin, SerializerMixin):
     description: Mapped[str | None] = mapped_column(Text())
     permissions: Mapped[Dict[str, Any]] = mapped_column(JSONB, nullable=False)
 
-    users: Mapped[List["User"]] = relationship(back_populates="role")
+    users: Mapped[list["User"]] = relationship(back_populates="role")
 
 
 def init_roles(session: Session):

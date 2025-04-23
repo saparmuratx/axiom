@@ -6,7 +6,7 @@ class ProfileService:
     def __init__(self, repository: ProfileRepository):
         self.repository = repository
 
-    def create(self, data: ProfileCreateSchema) -> ProfileCreateSchema:
-        profile = self.repository.create(data.model_dump())
+    def create_profile(self, data: dict) -> ProfileCreateSchema:
+        profile = self.repository.create(data)
 
         return profile

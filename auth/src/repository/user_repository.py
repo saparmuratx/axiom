@@ -1,13 +1,13 @@
-from typing import List
 from sqlalchemy.orm import Session
 
 from src.schemas.user_schemas import (
     UserCreateSchema,
+    UserDBSchema,
     UserSchema,
     UserUpdateSchema,
     UserCreateResponseSchema,
 )
-from src.models.models import User
+from src.models.auth_models import User
 
 
 class UserRepository:
@@ -19,17 +19,29 @@ class UserRepository:
 
         return user
 
-    def get(self, id):
+    def get_by_email(self, email: str) -> UserDBSchema:
+        user = self.session.query(User).filter(User.email == email).first()
+
+        if not user:
+            return user
+
+        return UserDBSchema.model_validate(user)
+
+    def get(self, id) -> UserSchema:
         user = self._get_by_id(id)
+
+        if not user:
+            return user
+
         return UserSchema.model_validate(user)
 
-    def list(self, limit = None, **filters) -> List[UserSchema]:
+    def list(self, limit=None, **filters) -> list[UserSchema]:
         users = self.session.query(User).filter(**filters).all()
 
         return [UserSchema.model_validate(user) for user in users]
 
-    def create(self, data: UserCreateSchema) -> UserCreateResponseSchema:
-        user = User(**data.model_dump())
+    def create(self, data: dict) -> UserCreateResponseSchema:
+        user = User(**data)
 
         self.session.add(user)
 
@@ -38,13 +50,16 @@ class UserRepository:
 
         return res
 
-    def update(self, id, data: UserUpdateSchema):
+    def update(self, id, data: dict) -> UserSchema:
         user = self._get_by_id(id)
 
-        for attr, value in data.model_dump().items():
+        if not user:
+            return user
+
+        for attr, value in data.items():
             setattr(user, attr, value)
 
-        return UserCreateSchema.model_validate(user)
+        return UserSchema.model_validate(user)
 
     def delete(self, id):
         user = self._get_by_id(id)

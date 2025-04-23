@@ -9,10 +9,6 @@ from pydantic import HttpUrl, EmailStr, ValidationError
 from src.config import settings
 
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
 class EmailGateway:
     base_template = """
         <!DOCTYPE html>
@@ -56,11 +52,17 @@ class EmailGateway:
         """
     }
 
-    def __init__(self):
-        self.host = settings.SMTP_HOST
-        self.port = settings.SMTP_PORT
-        self.sender = settings.SMTP_SENDER
-        self.password = settings.SMTP_PASSWORD
+    def __init__(
+        self,
+        host,
+        port,
+        sender,
+        password,
+    ):
+        self.host = host
+        self.port = port
+        self.sender = sender
+        self.password = password
 
     def init_message(self, recipient, subject, content):
         message = MIMEMultipart("alternative")
@@ -94,11 +96,11 @@ class EmailGateway:
                 smtp_object.login(self.sender, self.password)
                 smtp_object.sendmail(self.sender, recipient, msg.as_string())
 
-            logger.info(f"Sent email to {recipient}")
+            print(f"Sent email to {recipient}")
 
             return True
         except (smtplib.SMTPException, ValidationError, ValueError) as e:
-            logger.error(f"Failed to send email to {recipient}: {str(e)}")
+            print(f"Failed to send email to {recipient}: {str(e)}")
             return False
 
     def send_email_confirmation(self, recipient, activate_url):
@@ -108,7 +110,6 @@ class EmailGateway:
         subject = "Confirm Your Email"
 
         return self.send_message(recipient, subject, message=content)
-        
 
 
 if __name__ == "__main__":
