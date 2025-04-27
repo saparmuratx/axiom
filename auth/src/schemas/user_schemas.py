@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr, ConfigDict, UUID4
 
 
-from src.schemas.mixins import DBObjectMixin, UUIDTimeStampMixin
+from src.schemas.schema_mixins import DBObjectMixin, UUIDTimeStampMixin
 from src.schemas.role_schemas import RoleSchema
 from src.schemas.profile_schemas import ProfileInlineSchema
 
@@ -14,14 +14,14 @@ class UserCreateSchema(BaseModel):
     email: EmailStr
     password: str
 
+    role_id: UUID4 | None = None
 
-class UserCreateResponseSchema(BaseModel, UUIDTimeStampMixin, DBObjectMixin):
+
+class UserCreateResponseSchema(BaseModel, DBObjectMixin):
     model_config = ConfigDict(from_attributes=True)
 
     email: EmailStr
     is_active: bool | None
-    # password: str
-    # role_id: str | None
 
 
 class UserUpdateSchema(BaseModel):

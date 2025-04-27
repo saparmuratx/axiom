@@ -8,6 +8,7 @@ from src.schemas.user_schemas import (
     UserCreateResponseSchema,
 )
 from src.models.auth_models import User
+from src.repository.repository_exceptions import NotFoundException
 
 
 class UserRepository:
@@ -17,21 +18,21 @@ class UserRepository:
     def _get_by_id(self, id: str):
         user = self.session.query(User).filter(User.id == id).first()
 
+        if not user:
+            raise NotFoundException
+
         return user
 
     def get_by_email(self, email: str) -> UserDBSchema:
         user = self.session.query(User).filter(User.email == email).first()
 
         if not user:
-            return user
+            raise NotFoundException
 
         return UserDBSchema.model_validate(user)
 
     def get(self, id) -> UserSchema:
         user = self._get_by_id(id)
-
-        if not user:
-            return user
 
         return UserSchema.model_validate(user)
 
@@ -40,8 +41,8 @@ class UserRepository:
 
         return [UserSchema.model_validate(user) for user in users]
 
-    def create(self, data: dict) -> UserCreateResponseSchema:
-        user = User(**data)
+    def create(self, data: UserCreateSchema) -> UserCreateResponseSchema:
+        user = User(**data.model_dump())
 
         self.session.add(user)
 
@@ -50,17 +51,15 @@ class UserRepository:
 
         return res
 
-    def update(self, id, data: dict) -> UserSchema:
+    def update(self, id, data: UserUpdateSchema) -> UserSchema:
         user = self._get_by_id(id)
 
-        if not user:
-            return user
-
-        for attr, value in data.items():
+        for attr, value in data.model_dump().items():
             setattr(user, attr, value)
 
         return UserSchema.model_validate(user)
 
     def delete(self, id):
         user = self._get_by_id(id)
+
         self.session.delete(user)

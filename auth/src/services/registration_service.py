@@ -25,7 +25,7 @@ class RegistrationService:
         password_service: PasswordService,
         profile_service: ProfileService,
         jwt_service: JWTService,
-        email_gateway: EmailGateway,
+        email_gateway: EmailGateway = None,
     ):
         self.user_repository = user_repository
         self.role_repository = role_repository
@@ -37,18 +37,19 @@ class RegistrationService:
     def register(self, data: UserCreateSchema):
         role = self.role_repository.get_by_title("user")
 
-        user_data = data.model_dump()
-        raw_password = user_data.pop("password")
+        raw_password = data.password
 
-        user_data["password"] = self.password_service.get_password_hash(raw_password)
-        user_data["role_id"] = str(role.id)
+        data.password = self.password_service.get_password_hash(raw_password)
+        data.role_id = role.id
 
-        user = self.user_repository.create(user_data)
+        user = self.user_repository.create(data)
 
         self.user_repository.session.flush()
         user.refresh()
 
-        self.profile_service.create_profile({"user_id": user._object.id})
+        self.profile_service.create_profile(
+            ProfileCreateSchema(user_id=user._object.id)
+        )
 
         now = datetime.now()
 
@@ -60,11 +61,13 @@ class RegistrationService:
             "scope": "confirm-email",
         }
 
-        token = self.jwt_service.generate_token(payload=payload)
-        url = f"{settings.CONFIRM_EMAIL_URL}{token}"
+        if self.email_gateway:
+            token = self.jwt_service.generate_token(payload=payload)
 
-        # self.email_gateway.send_email_confirmation(
-        #     recipient=user._object.email, activate_url=url
-        # )
+            url = f"{settings.CONFIRM_EMAIL_URL}{token}"
+
+            self.email_gateway.send_email_confirmation(
+                recipient=user._object.email, activate_url=url
+            )
 
         return user

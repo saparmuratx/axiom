@@ -16,10 +16,10 @@ from src.services.password_service import PasswordService
 from src.repository.unit_of_work import UnitOfWork
 from src.repository.user_repository import UserRepository
 
-from src.schemas.login_schema import AccessTokenSchema, LoginSchema
+from src.schemas.login_schemas import AccessTokenSchema, LoginSchema
 
 
-login_router = APIRouter(prefix="/auth", tags=["Login"])
+login_router = APIRouter(tags=["Login"])
 
 
 @login_router.post("/login", response_model=AccessTokenSchema)

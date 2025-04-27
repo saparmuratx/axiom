@@ -24,5 +24,7 @@ class Settings(BaseSettings):
     PRIVATE_KEY: str
     PUBLIC_KEY: str
 
+    AUTH_ON: bool = True
+
 
 settings = Settings()

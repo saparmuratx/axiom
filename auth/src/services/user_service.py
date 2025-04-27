@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from src.repository.user_repository import UserRepository
 from src.schemas.user_schemas import UserSchema, UserUpdateSchema
+from src.repository.repository_exceptions import NotFoundException
 
 
 class UserService:

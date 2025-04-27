@@ -1,6 +1,5 @@
-from datetime import datetime, timedelta
-
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, status
+from fastapi.exceptions import HTTPException
 
 from src.config import settings
 
@@ -17,21 +16,19 @@ from src.repository.unit_of_work import UnitOfWork
 from src.repository.user_repository import UserRepository
 from src.repository.role_repository import RoleRepository
 
-from src.schemas.profile_schemas import ProfileCreateSchema
 from src.schemas.user_schemas import (
     UserCreateResponseSchema,
     UserCreateSchema,
-    UserSchema,
 )
 
 
-register_router = APIRouter(prefix="/auth", tags=["Registration"])
+register_router = APIRouter(tags=["Registration"])
 
 
 @register_router.post("/register", response_model=UserCreateResponseSchema)
-def register(user: UserCreateSchema):
-    with UnitOfWork() as unit_of_work:
-        try:
+def register_user(user: UserCreateSchema):
+    try:
+        with UnitOfWork() as unit_of_work:
             user_repository = UserRepository(session=unit_of_work.session)
             profile_repository = ProfileRepository(session=unit_of_work.session)
             role_repository = RoleRepository(session=unit_of_work.session)
@@ -39,12 +36,15 @@ def register(user: UserCreateSchema):
             jwt_service = JWTService(secret_key=settings.SECRET_KEY)
             profile_service = ProfileService(repository=profile_repository)
 
-            email_gateway = EmailGateway(
-                host=settings.SMTP_HOST,
-                port=settings.SMTP_PORT,
-                sender=settings.SMTP_SENDER,
-                password=settings.SMTP_PASSWORD,
-            )
+            if not settings.DEBUG:
+                email_gateway = EmailGateway(
+                    host=settings.SMTP_HOST,
+                    port=settings.SMTP_PORT,
+                    sender=settings.SMTP_SENDER,
+                    password=settings.SMTP_PASSWORD,
+                )
+            else:
+                email_gateway = None
 
             password_service = PasswordService()
 
@@ -58,27 +58,28 @@ def register(user: UserCreateSchema):
             )
 
             user = registration_service.register(user)
+        return user
 
-        except Exception as e:
-            unit_of_work.rollback()
+    except Exception as e:
+        unit_of_work.rollback()
 
-            print(f"Registration failed: {str(e)}")
+        print(f"Registration failed: {str(e)}")
 
-            raise HTTPException(
-                status_code=400, detail=f"Registration failed: {str(e)}"
-            )
-
-    return user
+        raise HTTPException(status_code=400, detail=f"Registration failed: {str(e)}")
 
 
 @register_router.get("/confirm-email/{token}")
 def confirm_email(token: str):
-    with UnitOfWork() as unit_of_work:
-        user_repository = UserRepository(unit_of_work.session)
-        user_service = UserService(repository=user_repository)
-        jwt_service = JWTService(secret_key=settings.SECRET_KEY)
-        claims = jwt_service.validate_token(token)
+    try:
+        with UnitOfWork() as unit_of_work:
+            user_repository = UserRepository(unit_of_work.session)
+            user_service = UserService(repository=user_repository)
+            jwt_service = JWTService(secret_key=settings.SECRET_KEY)
+            claims = jwt_service.validate_token(token)
 
-        user = user_service.activate_user(claims["sub"])
+            user = user_service.activate_user(claims["sub"])
 
-    return {"detail": "Activated successfully", "claims": claims}
+        return {"detail": "Activated successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)

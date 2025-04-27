@@ -5,9 +5,13 @@ from pydantic.types import UUID4
 
 
 class UUIDTimeStampMixin:
-    id: UUID4 | None
-    created_at: datetime | None
-    updated_at: datetime | None
+    id: UUID4
+    created_at: datetime
+    updated_at: datetime
+
+
+class UUIDMixin:
+    id: UUID4
 
 
 class DBObjectMixin:
