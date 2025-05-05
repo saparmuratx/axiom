@@ -1,7 +1,9 @@
+from src.utils import debug_print
 from src.config import settings
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 
 def get_session():
@@ -11,7 +13,6 @@ def get_session():
 
 class UnitOfWork:
     def __init__(self):
-        # self.session_maker = sessionmaker(bind=create_engine(settings.DATABASE_URL))
         self.session_maker = get_session
 
     def __enter__(self):

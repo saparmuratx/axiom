@@ -1,26 +1,9 @@
 import jwt
-from datetime import datetime
 
-from src.config import settings
-
-from datetime import datetime, timedelta
-from multiprocessing import managers
 from pathlib import Path
-from uuid import uuid4
 
 from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.primitives import serialization
-
-
-payload = {
-    "iss": "https://auth.coffeemesh.io/",
-    "sub": "ec7bbccf-ca89-4af3-82ac-b41e4831a962",
-    "aud": "http://127.0.0.1:8000/orders",
-    "iat": int(datetime.now().timestamp()),
-    "exp": 1667238616,
-    "azp": "7c2773a4-3943-4711-8997-70570d9b099c",
-    "scope": "openid",
-}
 
 
 class JWTService:
@@ -91,7 +74,5 @@ class JWTService:
         res = jwt.decode(
             jwt=token, key=public_key, algorithms=[self.algorithm], audience=aud
         )
-
-        print(res)
 
         return res

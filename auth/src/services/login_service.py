@@ -1,6 +1,12 @@
+from ..config import Settings
 from src.repository.user_repository import UserRepository
+
 from src.services.password_service import PasswordService
 from src.services.jwt_service import JWTService
+from src.services.service_exception import UserNotActiveException
+
+from src.config import settings
+
 
 from datetime import datetime, timedelta
 
@@ -19,22 +25,32 @@ class LoginUserService:
     def login(self, email: str, password: str):
         user = self.user_repository.get_by_email(email)
 
+        if not user.is_active:
+            raise UserNotActiveException()
+
         verified = self.password_service.verify_password(password, user.password)
 
         if not verified:
             return False
 
+        print(user.model_dump())
+
         now = datetime.now()
 
         payload = {
-            "iss": "https://axiomae.xyz",
+            "iss": str(settings.SITE_URL),
             "sub": str(user.id),
-            "aud": "http://localhost:8000",
+            "aud": str(settings.SITE_URL),
             "iat": now.timestamp(),
             "exp": (now + timedelta(hours=24)).timestamp(),
-            "scope": "login",
+            "scope": user.role.title,
         }
 
         token = self.jwt_service.generate_token(payload=payload)
 
         return token
+
+
+class RestorePasswordService:
+    def __init__(self, password_service: PasswordService):
+        pass

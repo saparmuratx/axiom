@@ -8,3 +8,10 @@ class LoginSchema(BaseModel):
 
 class AccessTokenSchema(BaseModel):
     access_token: str
+
+
+class RestorePasswordSchema(BaseModel):
+    email: EmailStr
+    password: str = Field(examples=["yournewpassword"])
+
+    token: str

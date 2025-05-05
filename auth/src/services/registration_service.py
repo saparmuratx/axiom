@@ -1,6 +1,8 @@
 from curses import raw
 from datetime import datetime, timedelta
 
+from sqlalchemy.exc import IntegrityError
+
 from src.config import settings
 
 from src.schemas.user_schemas import UserCreateSchema
@@ -11,9 +13,10 @@ from src.repository.role_repository import RoleRepository
 from src.repository.profile_repository import ProfileRepository
 
 from src.services.profile_service import ProfileService
-
 from src.services.jwt_service import JWTService
 from src.services.password_service import PasswordService
+from src.services.service_exception import UserNotUniqueException
+
 from src.gateway.email_gateway import EmailGateway
 
 
@@ -40,12 +43,16 @@ class RegistrationService:
         raw_password = data.password
 
         data.password = self.password_service.get_password_hash(raw_password)
-        data.role_id = role.id
 
-        user = self.user_repository.create(data)
+        try:
+            user = self.user_repository.create(data)
 
-        self.user_repository.session.flush()
-        user.refresh()
+            user._object.role_id = role.id
+            self.user_repository.session.flush()
+            user.refresh()
+
+        except IntegrityError:
+            raise UserNotUniqueException()
 
         self.profile_service.create_profile(
             ProfileCreateSchema(user_id=user._object.id)

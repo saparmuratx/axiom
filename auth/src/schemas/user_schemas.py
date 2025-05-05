@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel, EmailStr, ConfigDict, UUID4
 
 
@@ -13,8 +11,6 @@ class UserCreateSchema(BaseModel):
 
     email: EmailStr
     password: str
-
-    role_id: UUID4 | None = None
 
 
 class UserCreateResponseSchema(BaseModel, DBObjectMixin):

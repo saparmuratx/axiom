@@ -77,11 +77,13 @@ dependencies = [
     { name = "bcrypt" },
     { name = "cryptography" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "itsdangerous" },
     { name = "passlib" },
     { name = "psycopg2-binary" },
     { name = "pydantic-settings" },
     { name = "pyjwt" },
     { name = "sqlalchemy", extra = ["asyncio"] },
+    { name = "starlette-admin" },
 ]
 
 [package.metadata]
@@ -92,11 +94,13 @@ requires-dist = [
     { name = "bcrypt", specifier = ">=4.3.0" },
     { name = "cryptography", specifier = "==44.0.2" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.12" },
+    { name = "itsdangerous", specifier = ">=2.2.0" },
     { name = "passlib", specifier = ">=1.7.4" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "pydantic-settings", specifier = ">=2.9.0" },
     { name = "pyjwt", specifier = "==2.10.1" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.40" },
+    { name = "starlette-admin", specifier = ">=0.14.1" },
 ]
 
 [[package]]
@@ -385,6 +389,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f1/70/7703c29685631f5a7590aa73f1f1d3fa9a380e654b86af429e0934a32f7d/idna-3.10.tar.gz", hash = "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9", size = 190490 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl", hash = "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3", size = 70442 },
+]
+
+[[package]]
+name = "itsdangerous"
+version = "2.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/cb/8ac0172223afbccb63986cc25049b154ecfb5e85932587206f42317be31d/itsdangerous-2.2.0.tar.gz", hash = "sha256:e0050c0b7da1eea53ffaf149c0cfbb5c6e2e2b69c4bef22c81fa6eb73e5f6173", size = 54410 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl", hash = "sha256:c6242fc49e35958c8b15141343aa660db5fc54d4f13a1db01a3f5891b98700ef", size = 16234 },
 ]
 
 [[package]]
@@ -688,6 +701,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ce/20/08dfcd9c983f6a6f4a1000d934b9e6d626cff8d2eeb77a89a68eef20a2b7/starlette-0.46.2.tar.gz", hash = "sha256:7f7361f34eed179294600af672f565727419830b54b7b084efe44bb82d2fccd5", size = 2580846 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8b/0c/9d30a4ebeb6db2b25a841afbb80f6ef9a854fc3b41be131d249a977b4959/starlette-0.46.2-py3-none-any.whl", hash = "sha256:595633ce89f8ffa71a015caed34a5b2dc1c0cdb3f0f1fbd1e69339cf2abeec35", size = 72037 },
+]
+
+[[package]]
+name = "starlette-admin"
+version = "0.14.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jinja2" },
+    { name = "python-multipart" },
+    { name = "starlette" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c0/6e/8468ace0ee826dc797c77c7076c5294f4abe78debabb8f8ab7c3e137f0b2/starlette_admin-0.14.1.tar.gz", hash = "sha256:45e2baa3b9a8deec7a6e8ca9295123f648bb0d2070abe68f27193c6d5e32cc38", size = 2099705 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bd/5a/ac9ab9846350b40d73539c9094bf447d7900c586e013011af2a9fe995676/starlette_admin-0.14.1-py3-none-any.whl", hash = "sha256:5b6260d7ed3db455585852d669feb7ed9a8c5f9a1e3d48d21a52912ec37e18f9", size = 2160522 },
 ]
 
 [[package]]

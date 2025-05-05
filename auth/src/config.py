@@ -13,6 +13,7 @@ class Settings(BaseSettings):
 
     SITE_LOGO: HttpUrl
     SITE_NAME: str
+    SITE_URL: str
 
     SMTP_HOST: str
     SMTP_PORT: int
@@ -25,6 +26,7 @@ class Settings(BaseSettings):
     PUBLIC_KEY: str
 
     AUTH_ON: bool = True
+    JWT_EXPIRY: int = 24
 
 
 settings = Settings()

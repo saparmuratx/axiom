@@ -63,9 +63,7 @@ def register_user(user: UserCreateSchema):
     except Exception as e:
         unit_of_work.rollback()
 
-        print(f"Registration failed: {str(e)}")
-
-        raise HTTPException(status_code=400, detail=f"Registration failed: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @register_router.get("/confirm-email/{token}")
@@ -82,4 +80,6 @@ def confirm_email(token: str):
         return {"detail": "Activated successfully"}
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )

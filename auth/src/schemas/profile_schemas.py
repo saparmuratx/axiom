@@ -10,6 +10,7 @@ class ProfileInlineSchema(BaseModel, UUIDTimeStampMixin):
     first_name: str | None
     last_name: str | None
     phone_number: str | None
+    avatar: str | None
 
 
 class ProfileSchema(BaseModel, UUIDTimeStampMixin, DBObjectMixin):
@@ -34,3 +35,4 @@ class ProfileUpdateSchema(BaseModel):
     first_name: str | None = None
     last_name: str | None = None
     phone_number: str | None = None
+    avatar: str | None = None

@@ -22,7 +22,13 @@ class User(Base, BaseModelMixin, SerializerMixin):
     role_id = mapped_column(ForeignKey("roles.id"))
     role: Mapped["Role"] = relationship(back_populates="users")
 
-    profile: Mapped["Profile"] = relationship(back_populates="user")
+    profile: Mapped["Profile"] = relationship(
+        back_populates="user",
+        passive_deletes=True,
+        cascade="all, delete-orphan",
+        single_parent=True,
+        uselist=False,
+    )
 
 
 class Profile(Base, BaseModelMixin, SerializerMixin):
@@ -32,7 +38,9 @@ class Profile(Base, BaseModelMixin, SerializerMixin):
     last_name: Mapped[str] = mapped_column(String(255), nullable=True)
     phone_number: Mapped[str] = mapped_column(String(255), nullable=True)
 
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    avatar: Mapped[str] = mapped_column(String(), nullable=True)
+
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
 
     user: Mapped["User"] = relationship(back_populates="profile", single_parent=True)
 

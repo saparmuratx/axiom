@@ -1,4 +1,6 @@
+from urllib import response
 from fastapi import APIRouter, Header, Response, status, HTTPException
+from fastapi.requests import Request
 from pydantic import UUID4
 
 from src.repository.profile_repository import ProfileRepository
@@ -11,12 +13,19 @@ from src.services.user_service import UserService
 from src.schemas.user_schemas import UserSchema, UserUpdateSchema
 
 from src.api.api_exceptions import make_not_found
+from src.utils import debug_print
+from starlette.datastructures import State
+
 
 users_router = APIRouter(tags=["Users"])
 
 
 @users_router.get("/users", response_model=list[UserSchema])
-def list_users():
+async def list_users(request: Request):
+    data = request.state
+
+    debug_print(request=data)
+
     try:
         with UnitOfWork() as unit_of_work:
             repository = UserRepository(unit_of_work.session)
@@ -27,9 +36,8 @@ def list_users():
         return users
 
     except Exception as e:
-        print(e)
         return Response(
-            {"detail": "Something went wrong"},
+            content={"detail": str(e)},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
@@ -45,6 +53,11 @@ def retrieve_user(user_id: UUID4):
 
     except NotFoundException as e:
         raise make_not_found("User")
+    except Exception as e:
+        return Response(
+            content={"detail": str(e)},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     return user
 
@@ -59,6 +72,11 @@ def update_user(user_id: UUID4, data: UserUpdateSchema):
             user = service.update_user(user_id, data)
     except NotFoundException as e:
         raise make_not_found("User")
+    except Exception as e:
+        return Response(
+            content={"detail": str(e)},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     return user
 
@@ -78,6 +96,12 @@ def delete_user(user_id: str):
 
     except NotFoundException as e:
         raise make_not_found("User")
+
+    except Exception as e:
+        return Response(
+            content={"detail": str(e)},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
