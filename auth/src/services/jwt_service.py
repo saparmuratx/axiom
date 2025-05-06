@@ -1,3 +1,4 @@
+from typing import Any
 import jwt
 
 from pathlib import Path
@@ -61,14 +62,14 @@ class JWTService:
         elif self.algorithm == "HS256":
             return self.secret_key
 
-    def generate_token(self, payload: dict):
+    def generate_token(self, payload: dict) -> str:
         secret_key = self.get_secret_key()
 
         token = jwt.encode(algorithm=self.algorithm, payload=payload, key=secret_key)
 
         return token
 
-    def validate_token(self, token, aud: list[str] = None):
+    def validate_token(self, token, aud: list[str] = None) -> dict[str, Any]:
         public_key = self.get_public_key()
 
         res = jwt.decode(

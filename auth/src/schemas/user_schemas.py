@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ConfigDict, UUID4
+from pydantic import BaseModel, EmailStr, ConfigDict, UUID4, Field
 
 
 from src.schemas.schema_mixins import DBObjectMixin, UUIDTimeStampMixin
@@ -10,7 +10,11 @@ class UserCreateSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     email: EmailStr
-    password: str
+    password: str = Field(
+        examples=["youroldpassword"],
+        min_length=8,
+        max_length=128,
+    )
 
 
 class UserCreateResponseSchema(BaseModel, DBObjectMixin):

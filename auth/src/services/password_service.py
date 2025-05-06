@@ -1,5 +1,7 @@
 from passlib.context import CryptContext
 
+from src.repository.user_repository import UserRepository
+
 
 class PasswordService:
     def __init__(self):

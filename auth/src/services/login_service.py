@@ -1,9 +1,11 @@
-from ..config import Settings
 from src.repository.user_repository import UserRepository
 
 from src.services.password_service import PasswordService
 from src.services.jwt_service import JWTService
-from src.services.service_exception import UserNotActiveException
+from src.services.service_exception import (
+    InvalidPasswordException,
+    UserNotActiveException,
+)
 
 from src.config import settings
 
@@ -31,7 +33,7 @@ class LoginUserService:
         verified = self.password_service.verify_password(password, user.password)
 
         if not verified:
-            return False
+            raise InvalidPasswordException
 
         print(user.model_dump())
 
@@ -48,7 +50,7 @@ class LoginUserService:
 
         token = self.jwt_service.generate_token(payload=payload)
 
-        return token
+        return token, user
 
 
 class RestorePasswordService:

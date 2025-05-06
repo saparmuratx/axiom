@@ -27,6 +27,7 @@ class Settings(BaseSettings):
 
     AUTH_ON: bool = True
     JWT_EXPIRY: int = 24
+    LOG_LEVEL: str
 
 
 settings = Settings()

@@ -1,5 +1,7 @@
-from urllib import response
-from fastapi import APIRouter, Header, Response, status, HTTPException
+from fastapi.routing import APIRouter
+from fastapi.responses import Response
+from fastapi import status
+from fastapi.exceptions import HTTPException
 from fastapi.requests import Request
 from pydantic import UUID4
 
@@ -13,7 +15,7 @@ from src.services.user_service import UserService
 from src.schemas.user_schemas import UserSchema, UserUpdateSchema
 
 from src.api.api_exceptions import make_not_found
-from src.utils import debug_print
+from src.utils.debug_print import debug_print
 from starlette.datastructures import State
 
 
@@ -36,8 +38,8 @@ async def list_users(request: Request):
         return users
 
     except Exception as e:
-        return Response(
-            content={"detail": str(e)},
+        raise HTTPException(
+            detail=str(e),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
@@ -73,11 +75,10 @@ def update_user(user_id: UUID4, data: UserUpdateSchema):
     except NotFoundException as e:
         raise make_not_found("User")
     except Exception as e:
-        return Response(
-            content={"detail": str(e)},
+        raise HTTPException(
+            detail=str(e),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
     return user
 
 
@@ -94,16 +95,16 @@ def delete_user(user_id: str):
             profile_service.delete_user_profile(user_id)
             user_service.delete_user(user_id)
 
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+
     except NotFoundException as e:
         raise make_not_found("User")
 
     except Exception as e:
-        return Response(
-            content={"detail": str(e)},
+        raise HTTPException(
+            detail="Internal Server Error",
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @users_router.post("/users/{user_id}/deactivate")
@@ -117,5 +118,11 @@ def deactivate_user(user_id: str):
 
     except NotFoundException as e:
         raise make_not_found("User")
+
+    except Exception as e:
+        raise HTTPException(
+            detail=str(e),
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     # return Response(status_code=)

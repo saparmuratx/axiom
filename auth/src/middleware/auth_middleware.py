@@ -18,7 +18,7 @@ from starlette.responses import Response, JSONResponse
 
 from src.services.jwt_service import JWTService
 from src.config import settings
-from src.utils import debug_print
+from src.utils.debug_print import debug_print
 
 
 jwt_service = JWTService(
@@ -45,7 +45,7 @@ class JWTAuthorizationMiddleware(BaseHTTPMiddleware):
 
             return await call_next(request)
 
-        if request.url.path in ["/docs", "/openapi.json"]:
+        if request.url.path.strip("/") in ["docs", "openapi.json"]:
             return await call_next(request)
         if request.method == "OPTIONS":
             return await call_next(request)
@@ -65,6 +65,8 @@ class JWTAuthorizationMiddleware(BaseHTTPMiddleware):
         ):
             return await call_next(request)
 
+        debug_print(bearer_token=bearer_token)
+
         if not bearer_token:
             return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -72,8 +74,7 @@ class JWTAuthorizationMiddleware(BaseHTTPMiddleware):
             )
         try:
             token = bearer_token.split(" ")[1].strip()
-
-            debug_print(aud=self.aud)
+            debug_print(token=token)
 
             token_payload = jwt_service.validate_token(token=token, aud=self.aud)
             debug_print(token_payload=token_payload)
@@ -88,6 +89,8 @@ class JWTAuthorizationMiddleware(BaseHTTPMiddleware):
             InvalidTokenError,
             MissingRequiredClaimError,
         ) as e:
+            debug_print(exception_type=type(e))
+
             return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 content={"detail": str(e)},

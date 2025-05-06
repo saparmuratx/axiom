@@ -1,4 +1,4 @@
-from src.utils import debug_print
+from src.utils.debug_print import debug_print
 from src.config import settings
 
 from sqlalchemy import create_engine

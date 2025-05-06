@@ -10,5 +10,14 @@ def make_not_found(resource: str = "Resource"):
 
 
 class InactiveUserException(HTTPException):
-    status_code = status.HTTP_401_UNAUTHORIZED
-    detail = "User is not active"
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not active"
+        )
+
+
+class IncorrectOldPasswordException(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect old password"
+        )

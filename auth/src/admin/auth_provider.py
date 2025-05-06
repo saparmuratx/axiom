@@ -2,7 +2,10 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette_admin.auth import AuthProvider, AdminUser, AdminConfig
 from starlette_admin.exceptions import FormValidationError, LoginFailed
+
+from src.repository.repository_exceptions import NotFoundException
 from src.repository.user_repository import UserRepository
+
 from src.services.password_service import PasswordService
 
 
@@ -28,7 +31,11 @@ class UsernameAndPasswordProvider(AuthProvider):
             )
 
         # Fetch user by email or username (adjust based on your UserRepository)
-        user = self.user_repository.get_by_email(username)  # Or get_by_username
+        try:
+            user = self.user_repository.get_by_email(username)  # Or get_by_username
+        except NotFoundException as e:
+            raise LoginFailed("Invalid username or password")
+
         if not user or user.role.title != "admin":
             raise LoginFailed("Invalid username or password")
 

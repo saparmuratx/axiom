@@ -23,6 +23,11 @@ class UserRepository:
 
         return user
 
+    def get_db_user(self, id: str):
+        user = self._get_by_id(id)
+
+        return UserDBSchema.model_validate(user)
+
     def get_by_email(self, email: str) -> UserDBSchema:
         user = self.session.query(User).filter(User.email == email).first()
 
@@ -50,6 +55,13 @@ class UserRepository:
         res._object = user
 
         return res
+
+    def change_password(self, id: str, new_password: str):
+        user = self._get_by_id(id)
+
+        user.password = new_password
+
+        return UserSchema.model_validate(user)
 
     def update(self, id, data: UserUpdateSchema) -> UserSchema:
         user = self._get_by_id(id)
