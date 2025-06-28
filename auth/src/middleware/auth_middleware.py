@@ -1,5 +1,3 @@
-from operator import call
-from ssl import socket_error
 from jwt import (
     ExpiredSignatureError,
     ImmatureSignatureError,

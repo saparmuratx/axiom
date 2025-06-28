@@ -19,7 +19,7 @@ class User(Base, BaseModelMixin, SerializerMixin):
     password: Mapped[str] = mapped_column(String(255))
     is_active: Mapped[bool] = mapped_column(default=False)
 
-    role_id = mapped_column(ForeignKey("roles.id"))
+    role_id: Mapped[UUID] = mapped_column(ForeignKey("roles.id"))
     role: Mapped["Role"] = relationship(back_populates="users")
 
     profile: Mapped["Profile"] = relationship(
