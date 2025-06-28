@@ -17,9 +17,8 @@ class UUIDMixin:
 class DBObjectMixin:
     _object: Any | None = None
 
-
     @classmethod
-    def model_validate(cls, obj: Any, **kwargs):
+    def model_validate(cls, obj: Any, eager=False, **kwargs):
         """Override model_validate to store the SQLAlchemy instance in _object."""
         instance = super().model_validate(obj, **kwargs)
         if not isinstance(obj, dict):  # Assume non-dict is a SQLAlchemy model instance
