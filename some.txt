@@ -1,4 +1,3 @@
-.vscode
 # Created by https://www.toptal.com/developers/gitignore/api/python,flask,django
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,flask,django
 
@@ -39,7 +38,7 @@ sdist/
 var/
 wheels/
 share/python-wheels/
-# *.egg-info/
+*.egg-info/
 .installed.cfg
 *.egg
 MANIFEST

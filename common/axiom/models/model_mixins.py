@@ -7,6 +7,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import inspect as sa_inspect
+from sqlalchemy.sql import select
 
 
 class BaseModelMixin:
@@ -33,48 +34,6 @@ class SerializerMixin:
         return {attr: getattr(self, attr) for attr in attributes}
 
 
-class AsyncSerializerMixin:
-    async def to_dict(
-        self, session: AsyncSession = None, load_relationships: bool = True
-    ):
-        """
-        Convert the ORM model instance to a dict, with async support for relationships.
-        If session is provided and load_relationships is True, eagerly loads all relationships.
-        """
-        columns = [column.name for column in self.__table__.columns]
-        mapper = sa_inspect(type(self))
-        relationships = list(mapper.relationships.keys())
-        data = {col: getattr(self, col) for col in columns}
-
-        if session and load_relationships:
-            # Eagerly load all relationships if not already loaded
-            for rel in relationships:
-                state = sa_inspect(self)
-                if rel in state.unloaded:
-                    await session.refresh(self, [rel])
-                value = getattr(self, rel)
-                if isinstance(value, list):
-                    data[rel] = [getattr(obj, "id", obj) for obj in value]
-                elif value is not None:
-                    data[rel] = getattr(value, "id", value)
-                else:
-                    data[rel] = None
-        else:
-            # Only include relationships if already loaded
-            for rel in relationships:
-                state = sa_inspect(self)
-                if rel in state.unloaded:
-                    data[rel] = None
-                else:
-                    value = getattr(self, rel)
-                    if isinstance(value, list):
-                        data[rel] = [getattr(obj, "id", obj) for obj in value]
-                    elif value is not None:
-                        data[rel] = getattr(value, "id", value)
-                    else:
-                        data[rel] = None
-        return data
-
 
 class AsyncSerializerAlternativeMixin:
     async def to_dict(self):
@@ -88,7 +47,7 @@ class AsyncSerializerAlternativeMixin:
         data = {}
 
         for col in columns:
-            data[col] = getattr(self, col)
+            data[col] = str(getattr(self, col))
 
         # Only include relationships if already loaded
         state = sa_inspect(self)
@@ -98,39 +57,14 @@ class AsyncSerializerAlternativeMixin:
             else:
                 value = getattr(self, rel)
                 if isinstance(value, list):
-                    data[rel] = [getattr(obj, "id", obj) for obj in value]
+                    data[rel] = [str(getattr(obj, "id", None)) for obj in value]
                 elif value is not None:
-                    data[rel] = getattr(value, "id", value)
+                    data[rel] = str(getattr(value, "id", value))
                 else:
                     data[rel] = None
 
         return data
 
-
-class AsyncEagerLoadingMixin:
-    async def eager_load(
-        self, session: AsyncSession = None
-    ):
-        """
-        Eagerly load all relationships and set them as attributes on the instance.
-        Returns self.
-        """
-
-        if not session:
-            return self
-
-        mapper = sa_inspect(type(self))
-        relationships = list(mapper.relationships.keys())
-
-        for rel in relationships:
-            
-            print(rel)
-
-            state = sa_inspect(self)
-            if rel in state.unloaded:
-                await session.refresh(self, [rel])
-            
-        return self
 
 
 class AsyncEagerLoadingAlternativeMixin:
@@ -151,23 +85,19 @@ class AsyncEagerLoadingAlternativeMixin:
             state = sa_inspect(self)
             if rel not in state.unloaded:
                 continue
-            if depth == 1:
-                await session.refresh(self, [rel])
-            elif depth == 0:
-                rel_prop = mapper.relationships[rel]
-                if rel_prop.uselist:
-                    result = await session.execute(rel_prop.table.select().where(rel_prop.primaryjoin))
-                    setattr(self, f"{rel}_ids", [row[0] for row in result])
-                else:
-                    fk = next(iter(rel_prop.local_columns)).name
-                    setattr(self, f"{rel}_id", getattr(self, fk))
+
+            attr = await getattr(self.awaitable_attrs, rel)
+
+            setattr(self, rel, attr)
+
+            if depth == 0:
+                if isinstance(attr, list):
+                    id_list = [str(obj.id) for obj in attr]
+                    setattr(self, f"{rel}_ids", id_list)
+
 
         return self
-
-
-class AsyncEagerLoadingSerailizerMixin(AsyncEagerLoadingMixin, AsyncSerializerAlternativeMixin):
-    pass
-
+                    
 
 class AsyncEagerLoadingSerailizerAlternativeMixin(AsyncEagerLoadingAlternativeMixin, AsyncSerializerAlternativeMixin):
     pass

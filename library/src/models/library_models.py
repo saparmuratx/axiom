@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
 from sqlalchemy.types import String, UUID
 
-from axiom.models.model_mixins import BaseModelMixin, SerializerMixin, AsyncSerializerMixin, AsyncEagerLoadingSerailizerMixin, AsyncEagerLoadingSerailizerAlternativeMixin
+from axiom.models.model_mixins import BaseModelMixin, SerializerMixin, AsyncEagerLoadingSerailizerAlternativeMixin
 from axiom.models.base import AsyncBase
 
 
@@ -42,7 +42,7 @@ class Book(Base, BaseModelMixin, AsyncEagerLoadingSerailizerAlternativeMixin):
     )
 
 
-class Author(Base, BaseModelMixin, AsyncEagerLoadingSerailizerMixin):
+class Author(Base, BaseModelMixin, AsyncEagerLoadingSerailizerAlternativeMixin):
     __tablename__ = "authors"
 
     first_name: Mapped[str | None] = mapped_column(String(255), nullable=True)

@@ -1,8 +1,12 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, TYPE_CHECKING
 import uuid
 
 from axiom.schema.schema_mixins import UUIDTimeStampMixin, DBObjectMixin
+
+if TYPE_CHECKING:
+    from src.schemas.book_schemas import BookInlineSchema
+
 
 class AuthorBaseSchema(BaseModel):
     first_name: Optional[str] = None
@@ -10,8 +14,15 @@ class AuthorBaseSchema(BaseModel):
     middle_name: Optional[str] = None
     pseudonym: Optional[str] = None
 
+
+class AuthorInlineSchema(DBObjectMixin, UUIDTimeStampMixin, AuthorBaseSchema):
+    class Config:
+        from_attributes = True
+
+
 class AuthorCreateSchema(DBObjectMixin, AuthorBaseSchema):
     pass
+
 
 class AuthorUpdateSchema(DBObjectMixin, BaseModel):
     first_name: Optional[str] = None
@@ -19,12 +30,9 @@ class AuthorUpdateSchema(DBObjectMixin, BaseModel):
     middle_name: Optional[str] = None
     pseudonym: Optional[str] = None
 
+
 class AuthorSchema(DBObjectMixin, UUIDTimeStampMixin, AuthorBaseSchema):
-    books: List[uuid.UUID] = []
+    books:list[uuid.UUID] | list["BookInlineSchema"] = None
 
-    class Config:
-        from_attributes = True
-
-class AuthorInlineSchema(DBObjectMixin, UUIDTimeStampMixin, AuthorBaseSchema):
     class Config:
         from_attributes = True

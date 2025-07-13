@@ -56,42 +56,34 @@ def test_async_repo():
 
             book_id = "64ed85ad-0f99-45a8-be92-c4d0e045bf28"
 
-            # book = await repo.create(data=book_data)
-            book = await repo.retrieve(id=book_id, eager=False)
+            book = await repo.retrieve(id=book_id, eager=True, depth=0)
             
             from pprint import pprint
-            
-            # data = await book._object.to_dict(session=unit_of_work.session)
-            # data = await book._object.to_dict()
-
-            # pprint(book.model_dump(), indent=4)
-            # pprint((book.model_dump()))
-            # pprint(book.model_dump(), indent=4)
-
-            # print(type(book._object.author))
+ 
+            print("BOOK SCHEMA MODEL DUMP")
+            pprint(book.model_dump(), indent=4)
+ 
 
             book_obj = book._object
 
-            await book_obj.eager_load(unit_of_work.session)
+            # await book_obj.eager_load(unit_of_work.session, depth=1)
+            print("\nBOOK_OBJ RELATIONSHIOPS")
 
-            awaitable_attrs = book._object.awaitable_attrs
-            awaitable_attrs_dict = await awaitable_attrs.__dict__
+            await book_obj.eager_load(depth=1)
 
-            pprint(awaitable_attrs_dict, indent=4)
+            from sqlalchemy import inspect as sa_inspect
 
-            # genres = await awaitable_attrs_dict.genres
+            mapper = sa_inspect(type(book_obj))
+            relationships = mapper.relationships.keys()
 
-            print("c36d83b2-f1d1-4034-a25c-02d3ce439967" in book_obj.genres)
+            print(relationships)
             
-            author = await book._object.awaitable_attrs.author
 
+            for rel in relationships:
+                print(getattr(book_obj, rel))
+
+            print("\nBOOK_OBJ TO DICT")
             pprint(await book_obj.to_dict(), indent=4)
-
-            print(f"TYPE OF BOOK: {type(book)}")
-            
-            # pprint(await book._object.author.to_dict(), indent=4)
-
-            # book._object.genres.append()
 
 
     asyncio.run(main())

@@ -13,6 +13,7 @@ ReadSchema = TypeVar("ReadSchema", bound=BaseModel)
 CreateSchema = TypeVar("CreateSchema", bound=BaseModel)
 UpdateSchema = TypeVar("UpdateSchema", bound=BaseModel)
 
+
 class GenericRepository(Generic[T, CreateSchema, ReadSchema, UpdateSchema]):
     def __init__(
         self,
@@ -32,40 +33,44 @@ class GenericRepository(Generic[T, CreateSchema, ReadSchema, UpdateSchema]):
 
     def _get_by_id(self, id: str) -> T:
         obj = self.session.query(self.model).filter(self.model.id == id).first()
-        
+
         if not obj:
             raise NotFoundException
-        
+
         return obj
 
     def get_by_field(self, field_name: str, value) -> ReadSchema:
-        obj = self.session.query(self.model).filter(getattr(self.model, field_name) == value).first()
-        
+        obj = (
+            self.session.query(self.model)
+            .filter(getattr(self.model, field_name) == value)
+            .first()
+        )
+
         if not obj:
             raise NotFoundException
-        
+
         return self.read_schema.model_validate(obj, from_attributes=True)
 
     def create(self, data: CreateSchema):
         obj = self.model(**data.model_dump())
         self.session.add(obj)
-        
+
         schema = self.create_schema.model_validate(obj, from_attributes=True)
-        
+
         return schema
 
     def get(self, id: str) -> ReadSchema:
         obj = self._get_by_id(id)
-        
+
         return self.read_schema.model_validate(obj, from_attributes=True)
 
     def update(self, id: str, data: UpdateSchema) -> ReadSchema:
         obj = self._get_by_id(id)
-        
+
         for key, value in data.model_dump().items():
             if hasattr(obj, key):
                 setattr(obj, key, value)
-        
+
         return self.read_schema.model_validate(obj, from_attributes=True)
 
     def delete(self, id: str):
@@ -92,11 +97,13 @@ class AsyncGenericRepository(Generic[T, CreateSchema, ReadSchema, UpdateSchema])
         self.update_schema = update_schema or default_schema
         self.eager = eager
 
-    async def load_to_schema(self, obj: T, eager: bool | None = None):
+    async def load_to_schema(
+        self, obj: T, eager: bool | None = None, depth: int | None = None
+    ):
         use_eager = eager if eager is not None else self.eager
-    
+
         if use_eager and hasattr(obj, "eager_load"):
-            await obj.eager_load(session=self.session)
+            await obj.eager_load(session=self.session, depth=depth)
 
         schema = self.read_schema.model_validate(obj, from_attributes=True)
 
@@ -107,21 +114,23 @@ class AsyncGenericRepository(Generic[T, CreateSchema, ReadSchema, UpdateSchema])
             select(self.model).where(self.model.id == id)
         )
         obj = result.scalar_one_or_none()
-        
+
         if not obj:
             raise NotFoundException
-        
+
         return obj
 
-    async def get_by_field(self, field_name: str, value: Any, eager: bool | None = None) -> ReadSchema:
+    async def get_by_field(
+        self, field_name: str, value: Any, eager: bool | None = None
+    ) -> ReadSchema:
         result = await self.session.execute(
             select(self.model).where(getattr(self.model, field_name) == value)
         )
         obj = result.scalar_one_or_none()
-        
+
         if not obj:
             raise NotFoundException
-        
+
         return await self.load_to_schema(obj, eager=eager)
 
     async def create(self, data: CreateSchema):
@@ -132,13 +141,14 @@ class AsyncGenericRepository(Generic[T, CreateSchema, ReadSchema, UpdateSchema])
 
         return schema
 
-    async def retrieve(self, id: str, eager: bool | None = None) -> ReadSchema:
+    async def retrieve(self, id: str, eager: bool | None = None, depth: int | None = None) -> ReadSchema:
         obj = await self._get_by_id(id)
 
-        
-        return await self.load_to_schema(obj, eager=eager)
-    
-    async def list(self, *, filters: dict = None, eager: bool | None = None) -> list[ReadSchema]:
+        return await self.load_to_schema(obj, eager=eager, depth=depth)
+
+    async def list(
+        self, *, filters: dict = None, eager: bool | None = None
+    ) -> list[ReadSchema]:
         stmt = select(self.model)
         if filters:
             for field, value in filters.items():
@@ -147,15 +157,16 @@ class AsyncGenericRepository(Generic[T, CreateSchema, ReadSchema, UpdateSchema])
         objs = result.scalars().all()
         return [await self.load_to_schema(obj, eager=eager) for obj in objs]
 
-    async def update(self, id: str, data: UpdateSchema, eager: bool | None = None) -> ReadSchema:
+    async def update(
+        self, id: str, data: UpdateSchema, eager: bool | None = None
+    ) -> ReadSchema:
         obj = await self._get_by_id(id)
-        
+
         for key, value in data.model_dump().items():
             if hasattr(obj, key):
                 setattr(obj, key, value)
 
         return await self.load_to_schema(obj, eager=eager)
-
 
     async def delete(self, id: str):
         obj = await self._get_by_id(id)
