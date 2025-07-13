@@ -123,6 +123,9 @@ class AsyncEagerLoadingMixin:
         relationships = list(mapper.relationships.keys())
 
         for rel in relationships:
+            
+            print(rel)
+
             state = sa_inspect(self)
             if rel in state.unloaded:
                 await session.refresh(self, [rel])
@@ -130,5 +133,41 @@ class AsyncEagerLoadingMixin:
         return self
 
 
+class AsyncEagerLoadingAlternativeMixin:
+    async def eager_load(self, session: AsyncSession = None, depth: int = 1):
+        """
+        Eagerly load relationships. 
+        depth=1: Load relationships as model instances.
+        depth=0: Load only IDs (foreign key or list of IDs).
+        Returns self.
+        """
+        if not session:
+            return self
+
+        mapper = sa_inspect(type(self))
+        relationships = mapper.relationships.keys()
+
+        for rel in relationships:
+            state = sa_inspect(self)
+            if rel not in state.unloaded:
+                continue
+            if depth == 1:
+                await session.refresh(self, [rel])
+            elif depth == 0:
+                rel_prop = mapper.relationships[rel]
+                if rel_prop.uselist:
+                    result = await session.execute(rel_prop.table.select().where(rel_prop.primaryjoin))
+                    setattr(self, f"{rel}_ids", [row[0] for row in result])
+                else:
+                    fk = next(iter(rel_prop.local_columns)).name
+                    setattr(self, f"{rel}_id", getattr(self, fk))
+
+        return self
+
+
 class AsyncEagerLoadingSerailizerMixin(AsyncEagerLoadingMixin, AsyncSerializerAlternativeMixin):
+    pass
+
+
+class AsyncEagerLoadingSerailizerAlternativeMixin(AsyncEagerLoadingAlternativeMixin, AsyncSerializerAlternativeMixin):
     pass

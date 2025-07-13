@@ -30,12 +30,12 @@ class AsyncGenericCRUDService(Generic[TRepository, CreateSchema, ReadSchema, Upd
         self.repository = repository
 
     async def get(self, id: str) -> ReadSchema:
-        return await self.repository.get(id)
+        return await self.repository.retrieve(id)
 
     async def get_by_field(self, field_name: str, value) -> ReadSchema:
         return await self.repository.get_by_field(field_name, value)
 
-    async def create(self, data: CreateSchema) -> ReadSchema:
+    async def create(self, data: CreateSchema) -> CreateSchema:
         return await self.repository.create(data)
 
     async def update(self, id: str, data: UpdateSchema) -> ReadSchema:

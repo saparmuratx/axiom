@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 
 from pydantic import BaseModel
 
-from axiom.repository.repository_exceptions import NotFoundException
+from axiom.repository.exceptions import NotFoundException
 
 T = TypeVar("T")  # SQLAlchemy model
 ReadSchema = TypeVar("ReadSchema", bound=BaseModel)
