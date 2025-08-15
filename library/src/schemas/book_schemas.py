@@ -34,9 +34,8 @@ class BookUpdateSchema(DBObjectMixin, BaseModel):
 
 class BookSchema(DBObjectMixin, UUIDTimeStampMixin, BookBaseSchema):
     genres: list[GenreInlineSchema] = None 
-    genres_ids :list[uuid.UUID] = None
     collections: List[uuid.UUID] = None
-    author: AuthorInlineSchema | uuid.UUID = None
+    author: AuthorInlineSchema = None
 
     author_id: uuid.UUID
 

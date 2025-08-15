@@ -1,3 +1,4 @@
+# Updated File: axiom/service/generic_crud_service.py
 from typing import Generic, TypeVar
 
 TRepository = TypeVar("TRepository")
@@ -24,6 +25,8 @@ class GenericCRUDService(Generic[TRepository, CreateSchema, ReadSchema, UpdateSc
     def delete(self, id: str):
         return self.repository.delete(id)
 
+    def list(self, filters: dict = None) -> list[ReadSchema]:
+        return self.repository.list(filters=filters)
 
 class AsyncGenericCRUDService(Generic[TRepository, CreateSchema, ReadSchema, UpdateSchema]):
     def __init__(self, repository: TRepository):
@@ -44,4 +47,5 @@ class AsyncGenericCRUDService(Generic[TRepository, CreateSchema, ReadSchema, Upd
     async def delete(self, id: str):
         return await self.repository.delete(id)
 
-
+    async def list(self, filters: dict = None) -> list[ReadSchema]:
+        return await self.repository.list(filters=filters)

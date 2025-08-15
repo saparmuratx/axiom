@@ -36,3 +36,7 @@ class DBObjectMixin:
                 setattr(self, key, value)
 
         return self
+
+    @property
+    def object(self):
+        return self._object

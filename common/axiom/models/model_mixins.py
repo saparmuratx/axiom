@@ -4,10 +4,8 @@ from uuid import uuid4
 from sqlalchemy import DateTime, UUID, Uuid, inspect
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import inspect as sa_inspect
-from sqlalchemy.sql import select
 
 
 class BaseModelMixin:
@@ -34,40 +32,7 @@ class SerializerMixin:
         return {attr: getattr(self, attr) for attr in attributes}
 
 
-
-class AsyncSerializerAlternativeMixin:
-    async def to_dict(self):
-        """
-        Convert the ORM model instance to a dict.
-        Only includes relationships if already loaded.
-        """
-        columns = [column.name for column in self.__table__.columns]
-        mapper = sa_inspect(type(self))
-        relationships = set(mapper.relationships.keys())
-        data = {}
-
-        for col in columns:
-            data[col] = str(getattr(self, col))
-
-        # Only include relationships if already loaded
-        state = sa_inspect(self)
-        for rel in relationships:
-            if rel in state.unloaded:
-                data[rel] = None
-            else:
-                value = getattr(self, rel)
-                if isinstance(value, list):
-                    data[rel] = [str(getattr(obj, "id", None)) for obj in value]
-                elif value is not None:
-                    data[rel] = str(getattr(value, "id", value))
-                else:
-                    data[rel] = None
-
-        return data
-
-
-
-class AsyncEagerLoadingAlternativeMixin:
+class AsyncEagerLoadingMixin:
     async def eager_load(self, session: AsyncSession = None, depth: int = 1):
         """
         Eagerly load relationships. 
@@ -95,9 +60,5 @@ class AsyncEagerLoadingAlternativeMixin:
                     id_list = [str(obj.id) for obj in attr]
                     setattr(self, f"{rel}_ids", id_list)
 
-
         return self
                     
-
-class AsyncEagerLoadingSerailizerAlternativeMixin(AsyncEagerLoadingAlternativeMixin, AsyncSerializerAlternativeMixin):
-    pass

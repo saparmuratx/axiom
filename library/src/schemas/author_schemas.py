@@ -4,8 +4,6 @@ import uuid
 
 from axiom.schema.schema_mixins import UUIDTimeStampMixin, DBObjectMixin
 
-if TYPE_CHECKING:
-    from src.schemas.book_schemas import BookInlineSchema
 
 
 class AuthorBaseSchema(BaseModel):
@@ -32,7 +30,4 @@ class AuthorUpdateSchema(DBObjectMixin, BaseModel):
 
 
 class AuthorSchema(DBObjectMixin, UUIDTimeStampMixin, AuthorBaseSchema):
-    books:list[uuid.UUID] | list["BookInlineSchema"] = None
-
-    class Config:
-        from_attributes = True
+    pass

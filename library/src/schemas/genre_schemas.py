@@ -19,4 +19,7 @@ class GenreInlineSchema(DBObjectMixin, UUIDTimeStampMixin, GenreBaseSchema):
 
 
 class GenreSchema(DBObjectMixin, UUIDTimeStampMixin, GenreBaseSchema):
-    books: list["BookInlineSchema"] | list[uuid.UUID]
+    # books: list["BookInlineSchema"]
+    pass
+
+

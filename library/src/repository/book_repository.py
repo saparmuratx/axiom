@@ -63,10 +63,8 @@ def test_async_repo():
             print("BOOK SCHEMA MODEL DUMP")
             pprint(book.model_dump(), indent=4)
  
-
             book_obj = book._object
 
-            # await book_obj.eager_load(unit_of_work.session, depth=1)
             print("\nBOOK_OBJ RELATIONSHIOPS")
 
             await book_obj.eager_load(depth=1)
@@ -81,10 +79,6 @@ def test_async_repo():
 
             for rel in relationships:
                 print(getattr(book_obj, rel))
-
-            print("\nBOOK_OBJ TO DICT")
-            pprint(await book_obj.to_dict(), indent=4)
-
 
     asyncio.run(main())
 
