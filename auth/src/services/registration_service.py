@@ -73,6 +73,8 @@ class RegistrationService:
 
             url = f"{settings.CONFIRM_EMAIL_URL}{token}"
 
+            print(f"CONFIRM EMAIL URL: {url}")
+
             self.email_gateway.send_email_confirmation(
                 recipient=user._object.email, activate_url=url
             )

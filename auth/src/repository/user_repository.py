@@ -66,7 +66,10 @@ class UserRepository:
     def update(self, id, data: UserUpdateSchema) -> UserSchema:
         user = self._get_by_id(id)
 
-        for attr, value in data.model_dump().items():
+        if not isinstance(data, dict):
+            data = data.model_dump()
+
+        for attr, value in data.items():
             setattr(user, attr, value)
 
         return UserSchema.model_validate(user)

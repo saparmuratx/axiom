@@ -1,0 +1,33 @@
+.venv
+
+# Bytecode files
+**/*.pyc
+**/*.pyo
+**/__pycache__/
+
+# Python environment folders
+venv/
+# .env/
+.env
+
+# Django database file (local SQLite)
+*.sqlite3
+
+# Git and version control
+.git
+.gitignore
+
+# Docker and config files (optional, depending on whether you want them copied)
+Dockerfile
+docker-compose.yml
+
+# Editor and OS files
+*.swp
+*.swo
+*.DS_Store
+.vscode/
+.idea/
+
+# Documentation and markdown
+*.md
+

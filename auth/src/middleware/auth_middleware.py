@@ -51,16 +51,20 @@ class JWTAuthorizationMiddleware(BaseHTTPMiddleware):
         debug_print(self_aud=self.aud)
 
         bearer_token = request.headers.get("Authorization")
-
+        debug_print(request_path=request.url.path)
+        
         if request.url.path.startswith(
             (
                 "/admin",
-                "/admin/",
                 "/auth/login",
                 "/auth/register",
+                "/auth/confirm-email",
                 "/favicon.ico",
             )
         ):
+            
+            debug_print(request_path_skipped=request.url.path)
+
             return await call_next(request)
 
         debug_print(bearer_token=bearer_token)

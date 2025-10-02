@@ -90,11 +90,16 @@ class EmailGateway:
                 raise ValueError("Subject cannot be empty")
 
             msg = self.init_message(recipient, subject, message)
+            
+            print("AFTER INIT")
 
             with smtplib.SMTP(self.host, self.port) as smtp_object:
                 smtp_object.starttls()
+                print("AFTER STARTTLS")
                 smtp_object.login(self.sender, self.password)
+                print("AFTER LOGIN")
                 smtp_object.sendmail(self.sender, recipient, msg.as_string())
+                print("AFTER SENDMAIL")
 
             print(f"Sent email to {recipient}")
 
@@ -104,17 +109,28 @@ class EmailGateway:
             return False
 
     def send_email_confirmation(self, recipient, activate_url):
+        print("Email Send START")
+
         content = self.templates["confirm_email"].format(
             activate_url=activate_url, site_name=settings.SITE_NAME
         )
         subject = "Confirm Your Email"
 
+        print("Email Send END")
         return self.send_message(recipient, subject, message=content)
 
 
 if __name__ == "__main__":
-    email_gateway = EmailGateway()
+    from src.config import settings
 
-    email_gateway.send_message(
-        "devbekcoder@gmail.com", "Activate Your Account", "this is the messsage go"
+    email_gateway = EmailGateway(
+        host=settings.SMTP_HOST,
+        port=settings.SMTP_PORT,
+        sender=settings.SMTP_SENDER,
+        password=settings.SMTP_PASSWORD,
     )
+    
+    email_gateway.send_message(
+        "example@mail.com", "Activate Your Account", "this is the messsage go"
+    )
+

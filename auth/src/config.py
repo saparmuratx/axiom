@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     SITE_URL: str
 
     SMTP_HOST: str
-    SMTP_PORT: int
+    SMTP_PORT: int = 587
     SMTP_SENDER: str
     SMTP_PASSWORD: str
 
