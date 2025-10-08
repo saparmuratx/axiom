@@ -1,6 +1,6 @@
 services:
   auth_service:
-    image: auth
+    image: auth-image
     build:
       context: ./auth
       dockerfile: Dockerfile
@@ -20,7 +20,7 @@ services:
 
 
   library_service:
-    image: auth
+    image: lirary-image
     build:
       context: ./library
       dockerfile: Dockerfile
@@ -38,7 +38,16 @@ services:
     ports:
       - "127.0.0.1:5433:5432"
 
+  pypiserver:
+    image: pypiserver/pypiserver:latest
+    volumes:
+      - pypivolume:/data/packages
+    
+    ports:
+      - "127.0.0.1:8080:8080"
+    
 
 volumes:
   auth-db-data:
   library-db-data:
+  pypivolume:
