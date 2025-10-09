@@ -1,6 +1,6 @@
 [project]
 name = "axiom"
-version = "0.1.4"
+version = "0.1.5"
 description = "Add your description here"
 readme = "README.md"
 requires-python = "==3.13.7"
@@ -13,3 +13,8 @@ dependencies = [
     "pyjwt>=2.10.1",
     "sqlalchemy[asyncio]>=2.0.41",
 ]
+
+[[tool.uv.index]]
+name = "axiom"
+url = "http://axiomae.xyz/"  # Adjust host/port
+publish-url = "http://axiomae.xyz/"
