@@ -16,5 +16,6 @@ dependencies = [
 
 [[tool.uv.index]]
 name = "axiom"
-url = "http://axiomae.xyz/"  # Adjust host/port
-publish-url = "http://axiomae.xyz/"
+url = "http://pypi.axiomae.xyz/"
+publish-url = "http://pypi.axiomae.xyz/"
+explicit = true

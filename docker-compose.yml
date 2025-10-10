@@ -22,7 +22,7 @@ services:
       context: ./library
       dockerfile: Dockerfile
     ports:
-      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8001:8000"
     env_file:
       - ./library/.env
     
@@ -35,15 +35,6 @@ services:
     ports:
       - "127.0.0.1:5433:5432"
 
-  pypiserver:
-    image: pypiserver/pypiserver:latest
-    volumes:
-      - pypivolume:/data/packages
-    
-    ports:
-      - "127.0.0.1:8080:8080"
-
 volumes:
   auth-db-data:
   library-db-data:
-  pypivolume:
