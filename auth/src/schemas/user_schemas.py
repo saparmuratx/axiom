@@ -1,7 +1,8 @@
 from pydantic import BaseModel, EmailStr, ConfigDict, UUID4, Field
 
+from axiom.schema.schema_mixins import DBObjectMixin
 
-from src.schemas.schema_mixins import DBObjectMixin, UUIDTimeStampMixin
+from src.schemas.schema_mixins import UUIDTimeStampMixin
 from src.schemas.role_schemas import RoleSchema
 from src.schemas.profile_schemas import ProfileInlineSchema
 

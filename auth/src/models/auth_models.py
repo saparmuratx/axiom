@@ -4,15 +4,17 @@ from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship, Mapped,
 from sqlalchemy import ForeignKey, String, Text, UniqueConstraint, UUID, event
 from sqlalchemy.dialects.postgresql import JSONB
 
+from axiom.models.model_mixins import AsyncEagerLoadingMixin
+from axiom.models.base import AsyncBase
+
 from src.repository.unit_of_work import get_session
 from src.models.model_mixins import BaseModelMixin, SerializerMixin
 
 
-class Base(DeclarativeBase):
-    pass
+Base = AsyncBase
 
 
-class User(Base, BaseModelMixin, SerializerMixin):
+class User(Base, BaseModelMixin, SerializerMixin, AsyncEagerLoadingMixin):
     __tablename__ = "users"
 
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)

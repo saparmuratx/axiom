@@ -1,5 +1,5 @@
 services:
-  auth_service:
+  auth:
     build:
       context: ./auth
       dockerfile: Dockerfile
@@ -8,8 +8,9 @@ services:
     env_file:
       - ./auth/.env
     
-  auth_db:
+  auth-db:
     image: postgres:18
+    container_name: auth-db
     env_file:
     - ./auth/.env.postgres
     volumes:
@@ -17,7 +18,7 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
 
-  library_service:
+  library:
     build:
       context: ./library
       dockerfile: Dockerfile
@@ -26,14 +27,17 @@ services:
     env_file:
       - ./library/.env
     
-  library_db:
+  library-db:
     image: postgres:18
+    container_name: library-db
     env_file:
-    - ./library/.env.postgres
+      - ./library/.env.postgres
     volumes:
       - library-db-data:/var/lib/postgresql/data
     ports:
-      - "127.0.0.1:5433:5432"
+      - "127.0.0.1:5433:5433"    
+    command: ["postgres", "-c", "port=5433"]
+
 
 volumes:
   auth-db-data:

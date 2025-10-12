@@ -7,7 +7,6 @@ from sqlalchemy.sql import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import inspect as sa_inspect
 
-
 class BaseModelMixin:
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
 
@@ -33,20 +32,29 @@ class SerializerMixin:
 
 
 class AsyncEagerLoadingMixin:
-    async def eager_load(self, session: AsyncSession = None, depth: int = 1):
+    async def eager_load(self, session: AsyncSession, depth: int = 1):
         """
         Eagerly load relationships. 
         depth=1: Load relationships as model instances.
         depth=0: Load only IDs (foreign key or list of IDs).
         Returns self.
         """
-        if not session:
-            return self
 
         mapper = sa_inspect(type(self))
         relationships = mapper.relationships.keys()
 
+        print("#"*40)
+        print("#"*40)
+        print("#"*40)
+        print("EAGER LOAD GO")
+
+        print(f"RELATIONSHIPS: {relationships}")
+        print(f"DEPTH: {depth}")
+
         for rel in relationships:
+            
+            print(f"REL: {rel}")
+
             state = sa_inspect(self)
             if rel not in state.unloaded:
                 continue
@@ -55,10 +63,16 @@ class AsyncEagerLoadingMixin:
 
             setattr(self, rel, attr)
 
+            print(f"SELF.{rel}: {getattr(self, rel)}")
+
             if depth == 0:
                 if isinstance(attr, list):
                     id_list = [str(obj.id) for obj in attr]
                     setattr(self, f"{rel}_ids", id_list)
+
+        print("#"*40)
+        print("#"*40)
+        print("#"*40)
 
         return self
                     

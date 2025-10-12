@@ -138,3 +138,11 @@ class ReadingProgress(Base, BaseModelMixin, SerializerMixin):
     chunk_id: Mapped[uuid.UUID] = mapped_column(nullable=True)
     offset: Mapped[int] = mapped_column(nullable=True)
     book: Mapped["Book"] = relationship(back_populates="reading_progresses")
+
+
+class TestModel(Base, BaseModelMixin, SerializerMixin):
+    __tablename__ = "test_model"
+
+    chapter_id: Mapped[uuid.UUID] = mapped_column(nullable=True)
+    chunk_id: Mapped[uuid.UUID] = mapped_column(nullable=True)
+    description: Mapped[str] = mapped_column()

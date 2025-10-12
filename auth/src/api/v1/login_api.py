@@ -7,7 +7,6 @@ from fastapi.exceptions import HTTPException
 from fastapi.requests import Request
 from fastapi.responses import Response, JSONResponse
 
-from ..schemas.user_schemas import UserUpdateSchema
 from src.services.service_exception import (
     InvalidPasswordException,
     UserNotActiveException,
@@ -26,6 +25,7 @@ from src.repository.repository_exceptions import NotFoundException
 from src.repository.unit_of_work import UnitOfWork
 from src.repository.user_repository import UserRepository
 
+from src.schemas.user_schemas import UserUpdateSchema
 from src.schemas.login_schemas import (
     IssueAccessTokenSchema,
     ChangePasswordSchema,

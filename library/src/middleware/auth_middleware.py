@@ -14,7 +14,7 @@ from starlette.middleware.base import RequestResponseEndpoint, BaseHTTPMiddlewar
 from starlette.requests import Request
 from starlette.responses import Response, JSONResponse
 
-from src.services.jwt_service import JWTService
+from axiom.services.jwt_service import JWTService
 from src.config import settings
 from src.utils.debug_print import debug_print
 

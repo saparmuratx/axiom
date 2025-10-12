@@ -19,4 +19,4 @@ class BookCRUDService(AsyncGenericCRUDService[AsyncBookRepository, BookCreateSch
         return await self.update(id, data)
 
     async def delete_book(self, id: str):
-        await self.delete(id)
+        await self.delete(id)   

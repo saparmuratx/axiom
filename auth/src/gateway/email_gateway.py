@@ -46,6 +46,7 @@ class EmailGateway:
                 rel="noopener noreferrer">
                 Activate Account
             </a>
+            <br>
             <p style="font-size:16px; color:#51545E; text-align:center; margin-bottom:30px;">
                 If you did not create this account, please ignore this email.
             </p>
@@ -91,17 +92,10 @@ class EmailGateway:
 
             msg = self.init_message(recipient, subject, message)
             
-            print("AFTER INIT")
-
             with smtplib.SMTP(self.host, self.port) as smtp_object:
                 smtp_object.starttls()
-                print("AFTER STARTTLS")
                 smtp_object.login(self.sender, self.password)
-                print("AFTER LOGIN")
                 smtp_object.sendmail(self.sender, recipient, msg.as_string())
-                print("AFTER SENDMAIL")
-
-            print(f"Sent email to {recipient}")
 
             return True
         except (smtplib.SMTPException, ValidationError, ValueError) as e:

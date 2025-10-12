@@ -8,6 +8,7 @@ load_dotenv()
 class Settings(BaseSettings):
     DEBUG: bool = True
     DATABASE_URL: str
+    DATABASE_ASYNC_URL: str
     FRONT_URL: HttpUrl
     CONFIRM_EMAIL_URL: HttpUrl
 

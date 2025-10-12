@@ -43,7 +43,14 @@ class JWTAuthorizationMiddleware(BaseHTTPMiddleware):
 
             return await call_next(request)
 
-        if request.url.path.strip("/") in ["docs", "openapi.json"]:
+        if request.url.path.strip("/") in [
+            "v1/docs",
+            "v2/docs",
+            "v1/redoc",
+            "v2/redoc",
+            "v1/openapi.json",
+            "v2/openapi.json",
+        ]:
             return await call_next(request)
         if request.method == "OPTIONS":
             return await call_next(request)
@@ -55,11 +62,14 @@ class JWTAuthorizationMiddleware(BaseHTTPMiddleware):
         
         if request.url.path.startswith(
             (
-                "/admin",
-                "/auth/login",
-                "/auth/register",
-                "/auth/confirm-email",
                 "/favicon.ico",
+                "/admin",
+                "/v1/auth/login",
+                "/v1/auth/register",
+                "/v1/auth/confirm-email",
+                "/v2/auth/login",
+                "/v2/auth/register",
+                "/v2/auth/confirm-email",
             )
         ):
             

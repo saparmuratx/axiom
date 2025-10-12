@@ -1,6 +1,6 @@
 from starlette.requests import Request
 from starlette.responses import Response
-from starlette_admin.auth import AuthProvider, AdminUser, AdminConfig
+from starlette_admin.auth import AuthProvider, AdminUser, AdminConfig, BaseAuthProvider
 from starlette_admin.exceptions import FormValidationError, LoginFailed
 
 from src.repository.repository_exceptions import NotFoundException
