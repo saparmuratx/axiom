@@ -23,7 +23,7 @@ axiom = { index = "axiom" }
 
 [[tool.uv.index]]
 name = "axiom"
-url = "http://pypi.axiomae.xyz/"
+url = "https://pypi.axiomae.xyz/"
 explicit = true
 
 
