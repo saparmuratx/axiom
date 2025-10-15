@@ -1,6 +1,6 @@
 [project]
 name = "axiom"
-version = "0.1.5"
+version = "0.2.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = "==3.13.7"
@@ -16,6 +16,6 @@ dependencies = [
 
 [[tool.uv.index]]
 name = "axiom"
-url = "http://pypi.axiomae.xyz/"
-publish-url = "http://pypi.axiomae.xyz/"
+url = "https://pypi.axiomae.xyz/"
+publish-url = "https://pypi.axiomae.xyz/"
 explicit = true
