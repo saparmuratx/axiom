@@ -17,7 +17,7 @@ dependencies = [
     "bcrypt>=4.3.0",
     "starlette-admin>=0.14.1",
     "itsdangerous>=2.2.0",
-    "axiom>=0.1.5",
+    "axiom>=0.2.0",
 ]
 
 [tool.uv.sources]
@@ -25,5 +25,5 @@ axiom = { index = "axiom" }
 
 [[tool.uv.index]]
 name = "axiom"
-url = "http://pypi.axiomae.xyz/"
+url = "https://pypi.axiomae.xyz/"
 explicit = true

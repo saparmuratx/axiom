@@ -47,7 +47,7 @@ async def login(request: Request, data: LoginSchema):
 
             token, user = await login_service.login(**data.model_dump())
 
-        logger.info(f"User login for [{str(user.id)}]") 
+        logger.info(f"Login by User with ID: {str(user.id)}") 
 
         request.scope["session"]["user_id"] = str(user.id)
         return IssueAccessTokenSchema(access_token=token, user_id=str(user.id))

@@ -8,13 +8,13 @@ from src.middleware.auth_middleware import JWTAuthorizationMiddleware
 from src.api.v1.router import auth_router_v1
 from src.api.v2.router import auth_router_v2
 
-from src.utils.logging import setup_logging
+from axiom.logging import setup_logging
 from src.config import settings
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    setup_logging()
+    setup_logging("fastapi")
     
     yield
 
