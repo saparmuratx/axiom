@@ -40,6 +40,15 @@ services:
       - "127.0.0.1:${LIBRARY_DB_PORT}:${LIBRARY_DB_PORT}"    
     command: ["postgres", "-c", "port=${LIBRARY_DB_PORT}"]
 
+  storage:
+    build:
+      context: ./storage
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:${STORAGE_SERVICE_PORT}:8000"
+    env_file:
+      - ./storage/.env
+
   storage-db:
     image: cassandra:5.0.5
     container_name: storage-db
@@ -52,8 +61,20 @@ services:
       - storage-db-data:/var/lib/cassandra
       - ./storage/cassandra.yaml:/etc/cassandra/cassandra.yaml
 
+  storage-pg-db:
+    image: postgres:18
+    container_name: storage-pg-db
+    env_file:
+      - ./storage/.env.postgres
+    volumes:
+      - storage-pg-db-data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:${STORAGE_DB_PORT}:${STORAGE_DB_PORT}"
+    command: ["postgres", "-c", "port=${STORAGE_DB_PORT}"]
+
 
 volumes:
   auth-db-data:
   library-db-data:
   storage-db-data:
+  storage-pg-db-data:
