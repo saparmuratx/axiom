@@ -1,7 +1,6 @@
 import uuid
 from datetime import date
 
-from xmlrpc.client import Boolean
 from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
 from sqlalchemy.types import String, UUID
@@ -78,7 +77,7 @@ class Collection(Base, BaseModelMixin, SerializerMixin):
     description: Mapped[str | None] = mapped_column(nullable=True)
 
     user_id: Mapped[uuid.UUID | None] = mapped_column(nullable=True)
-    is_public: Mapped[Boolean] = mapped_column(default=False)
+    is_public: Mapped[bool] = mapped_column(default=False)
 
     books: Mapped[list["Book"]] = relationship(
         "Book", secondary="book_collection", back_populates="collections"
