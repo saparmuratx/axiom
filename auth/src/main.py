@@ -4,13 +4,14 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi import FastAPI
 
 from src.admin.backend import admin
-from src.middleware.auth_middleware import JWTAuthorizationMiddleware
+# from src.middleware.auth_middleware import JWTAuthorizationMiddleware
+from axiom.middleware.auth_middleware import JWTAuthorizationMiddleware
 from src.api.v1.router import auth_router_v1
 from src.api.v2.router import auth_router_v2
 
 from axiom.logging import setup_logging
 from src.config import settings
-
+from src.utils.openapi import custom_openapi
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -23,10 +24,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
 admin.mount_to(app)
 
 app_v1 = FastAPI()
+app_v1.openapi = custom_openapi
+
 app_v2 = FastAPI()
+app_v1.openapi = custom_openapi
 
 
 app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
