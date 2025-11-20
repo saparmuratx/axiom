@@ -1,4 +1,3 @@
-# File: src/services/book_service.py
 from axiom.service.generic_crud_service import AsyncGenericCRUDService
 
 from src.repository.book_repository import AsyncBookRepository

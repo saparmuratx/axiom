@@ -1,9 +1,7 @@
 from pydantic import BaseModel
-from typing import Optional, TYPE_CHECKING
-import uuid
+from typing import Optional
 
 from axiom.schema.schema_mixins import UUIDTimeStampMixin, DBObjectMixin
-
 
 
 class AuthorBaseSchema(BaseModel):

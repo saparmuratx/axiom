@@ -1,4 +1,3 @@
-# File: src/repository/author_repository.py
 from axiom.repository.generic_repository import (
     GenericRepository,
     AsyncGenericRepository,
