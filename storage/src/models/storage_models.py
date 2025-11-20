@@ -1,8 +1,10 @@
+import logging
 import uuid
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, String, SmallInteger
+from sqlalchemy import event, ForeignKey, String, SmallInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import object_session
 
 from axiom.models.model_mixins import BaseModelMixin, SerializerMixin, AsyncEagerLoadingMixin
 from axiom.models.base import AsyncBase
@@ -10,6 +12,7 @@ from axiom.models.base import AsyncBase
 
 Base = AsyncBase
 
+logger = logging.getLogger(__name__)
 
 class Chapter(Base, BaseModelMixin, AsyncEagerLoadingMixin, SerializerMixin):
     __tablename__ = "chapters"
@@ -39,3 +42,41 @@ class Chunk(Base, BaseModelMixin, AsyncEagerLoadingMixin, SerializerMixin):
     chapter: Mapped["Chapter"] = relationship("Chapter", back_populates="chunks")
     prev: Mapped["Chunk"] = relationship("Chunk", remote_side="Chunk.id", foreign_keys=[prev_chunk], post_update=True)
     next: Mapped["Chunk"] = relationship("Chunk", remote_side="Chunk.id", foreign_keys=[next_chunk], post_update=True)
+
+@event.listens_for(Chapter.prev, "set", propagate=True)
+def sync_next_chapter(target, value, oldvalue, initiator):
+    print(f"SET PREVIOUS for chapter {Chapter.id} {Chapter.prev}")
+    if value is not None:
+        value.next = target
+
+# @event.listens_for(Chapter.next, "set", propagate=True)
+# def sync_prev_chapter(target, value, oldvalue, initiator):
+#     if value is not None:
+#         value.next = target
+
+# @event.listens_for(Chunk.prev, "set", propagate=True)
+# def sync_next_chunk(target, value, oldvalue, initiator):
+#     if value is not None:
+#         value.next = target
+
+# @event.listens_for(Chunk.next, "set", propagate=True)
+# def sync_prev_chunk(target, value, oldvalue, initiator):
+#     if value is not None:
+#         value.next = target
+
+@event.listens_for(Chapter, "after_insert")
+def before_insert(mapper, connection, target):
+    logger.debug(f"MAPPER: {mapper}")
+    logger.debug(f"CONNECTION: {connection}")
+    logger.debug(f"TARGET: {target}")
+
+    logger.info(target.to_dict())
+
+    if target.prev:
+        target.prev.next = target
+    if target.next:
+        target.next.prev = target
+
+    
+
+    
