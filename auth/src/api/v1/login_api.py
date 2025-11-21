@@ -13,12 +13,12 @@ from src.services.service_exception import (
 )
 from src.api.api_exceptions import IncorrectOldPasswordException
 from src.config import settings
+from src.utils import get_jwt_service
 
 from src.gateway.email_gateway import EmailGateway
 
 from src.services.user_service import UserService
 from src.services.login_service import LoginUserService
-from src.services.jwt_service import JWTService
 from src.services.password_service import PasswordService
 
 from src.repository.repository_exceptions import NotFoundException
@@ -45,11 +45,8 @@ def login(data: LoginSchema):
         with UnitOfWork() as unit_of_work:
             user_repository = UserRepository(session=unit_of_work.session)
 
-            jwt_service = JWTService(
-                algorithm="RS256",
-                private_key_path=settings.PRIVATE_KEY,
-                public_key_path=settings.PUBLIC_KEY,
-            )
+            jwt_service = get_jwt_service()
+            
             password_service = PasswordService()
 
             login_service = LoginUserService(

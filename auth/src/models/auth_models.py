@@ -68,7 +68,9 @@ def init_roles(session: Session):
 
     user_role = Role(title="user", description="Regular user", permissions={})
 
-    session.add_all([admin_role, moderator_role, user_role])
+    guest_role = Role(title="guest", description="Guest user", permissions={})
+
+    session.add_all([admin_role, moderator_role, user_role, guest_role])
 
     session.commit()
 

@@ -17,7 +17,7 @@ dependencies = [
     "bcrypt>=4.3.0",
     "starlette-admin>=0.14.1",
     "itsdangerous>=2.2.0",
-    "axiom>=0.2.0",
+    "axiom>=0.2.3",
 ]
 
 [tool.uv.sources]

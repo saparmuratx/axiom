@@ -6,7 +6,7 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    DEBUG: bool = True
+    DEBUG: bool = False
     DATABASE_URL: str
     DATABASE_ASYNC_URL: str
     FRONT_URL: HttpUrl

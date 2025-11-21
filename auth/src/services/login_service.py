@@ -1,7 +1,7 @@
 from src.repository.user_repository import UserRepository, AsyncUserRepository
 
 from src.services.password_service import PasswordService
-from src.services.jwt_service import JWTService
+from axiom.service.jwt_service import JWTService
 from src.services.service_exception import (
     InvalidPasswordException,
     UserNotActiveException,

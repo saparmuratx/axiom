@@ -1,15 +1,16 @@
 from logging import getLogger
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 from fastapi.exceptions import HTTPException
 
 
 from axiom.repository.unit_of_work import AsyncUnitOfWork
-from axiom.service.jwt_service import JWTService
 from axiom.repository.exceptions import NotFoundException
 
 from src.services.password_service import PasswordService
 from src.services.login_service import AsyncLoginUserService
+
+from src.utils import get_jwt_service
 
 from src.schemas.login_schemas import IssueAccessTokenSchema, LoginSchema
 from src.repository.user_repository import AsyncUserRepository
@@ -31,11 +32,7 @@ async def login(request: Request, data: LoginSchema):
         async with AsyncUnitOfWork(database_url=settings.DATABASE_ASYNC_URL) as unit_of_work:
             repository = AsyncUserRepository(unit_of_work.session)
 
-            jwt_service = JWTService(
-                algorithm="RS256",
-                private_key_path=settings.PRIVATE_KEY,
-                public_key_path=settings.PRIVATE_KEY,
-            )
+            jwt_service = get_jwt_service()
 
             password_service = PasswordService()
 

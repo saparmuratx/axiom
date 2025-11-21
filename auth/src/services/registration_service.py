@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.exc import IntegrityError
 
+from axiom.service.jwt_service import JWTService
+ 
 from src.config import settings
 
 from src.schemas.user_schemas import UserCreateSchema
@@ -13,7 +15,6 @@ from src.repository.role_repository import RoleRepository
 from src.repository.profile_repository import ProfileRepository
 
 from src.services.profile_service import ProfileService
-from src.services.jwt_service import JWTService
 from src.services.password_service import PasswordService
 from src.services.service_exception import UserNotUniqueException
 

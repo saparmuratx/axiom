@@ -91,7 +91,7 @@ requires-dist = [
     { name = "aiosqlite", specifier = ">=0.21.0" },
     { name = "alembic", specifier = ">=1.15.2" },
     { name = "asyncpg", specifier = ">=0.30.0" },
-    { name = "axiom", specifier = ">=0.2.0", index = "https://pypi.axiomae.xyz/" },
+    { name = "axiom", specifier = ">=0.2.3", index = "https://pypi.axiomae.xyz/" },
     { name = "bcrypt", specifier = ">=4.3.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.12" },
     { name = "itsdangerous", specifier = ">=2.2.0" },
@@ -105,7 +105,7 @@ requires-dist = [
 
 [[package]]
 name = "axiom"
-version = "0.2.0"
+version = "0.2.3"
 source = { registry = "https://pypi.axiomae.xyz/" }
 dependencies = [
     { name = "asyncpg" },
@@ -116,9 +116,9 @@ dependencies = [
     { name = "pyjwt" },
     { name = "sqlalchemy", extra = ["asyncio"] },
 ]
-sdist = { url = "https://pypi.axiomae.xyz/packages/axiom-0.2.0.tar.gz", hash = "sha256:38b6da1b4c9aefcdd1aedf3d71914001b8d0cb61511b3d4167c3d953391e946a" }
+sdist = { url = "https://pypi.axiomae.xyz/packages/axiom-0.2.3.tar.gz", hash = "sha256:1af79e4bba5fea3f479ec42a18c3d81e94d577d55d0654bb75d0ba8b4591770b" }
 wheels = [
-    { url = "https://pypi.axiomae.xyz/packages/axiom-0.2.0-py3-none-any.whl", hash = "sha256:3ed0fe0b03b2078067482f61d47b9e374aa7bd9ac65677452f0e5ccf64132430" },
+    { url = "https://pypi.axiomae.xyz/packages/axiom-0.2.3-py3-none-any.whl", hash = "sha256:e50623ec7874e6fa872b59572285f89dd99c6ee68078583ba593ba657d9b3f81" },
 ]
 
 [[package]]

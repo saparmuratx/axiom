@@ -1,13 +1,15 @@
+import logging
+
 from fastapi import APIRouter, status
 from fastapi.exceptions import HTTPException
 
 from src.config import settings
+from src.utils import get_jwt_service
 
 from src.gateway.email_gateway import EmailGateway
 
 from src.services.registration_service import RegistrationService
 from src.services.user_service import UserService
-from src.services.jwt_service import JWTService
 from src.services.profile_service import ProfileService
 from src.services.password_service import PasswordService
 
@@ -21,11 +23,13 @@ from src.schemas.user_schemas import (
     UserCreateSchema,
 )
 
+logger = logging.getLogger(__name__)
 
 register_router = APIRouter(tags=["Registration"])
 
 
-@register_router.post("/register", response_model=UserCreateResponseSchema)
+
+@register_router.post("/register", response_model=UserCreateResponseSchema, tags=["auth-exempt"])
 def register_user(user: UserCreateSchema):
     try:
         with UnitOfWork() as unit_of_work:
@@ -33,8 +37,10 @@ def register_user(user: UserCreateSchema):
             profile_repository = ProfileRepository(session=unit_of_work.session)
             role_repository = RoleRepository(session=unit_of_work.session)
 
-            jwt_service = JWTService(secret_key=settings.SECRET_KEY)
+            jwt_service = get_jwt_service()
             profile_service = ProfileService(repository=profile_repository)
+
+            logger.info(settings.DEBUG)
 
             if not settings.DEBUG:
                 email_gateway = EmailGateway(
@@ -72,7 +78,7 @@ def confirm_email(token: str):
         with UnitOfWork() as unit_of_work:
             user_repository = UserRepository(unit_of_work.session)
             user_service = UserService(repository=user_repository)
-            jwt_service = JWTService(secret_key=settings.SECRET_KEY)
+            jwt_service = get_jwt_service()
             claims = jwt_service.validate_token(token)
 
             user = user_service.activate_user(claims["sub"])

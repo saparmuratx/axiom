@@ -10,6 +10,14 @@ class ProfileService:
         profile = self.repository.get(id)
 
         return profile
+    
+    
+    def list_profile(self):
+        profile = self.repository.list()
+
+        return profile
+    
+
 
     def create_profile(self, data: ProfileCreateSchema) -> ProfileCreateSchema:
         profile = self.repository.create(data)
