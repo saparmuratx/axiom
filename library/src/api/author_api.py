@@ -1,4 +1,5 @@
-# File: src/api/author_api.py
+import logging
+
 from fastapi import APIRouter, HTTPException, status, Request
 
 from pydantic import UUID4
@@ -17,6 +18,8 @@ from src.config import settings
 author_router = APIRouter(tags=["Authors"])
 
 AuthorSchema.model_rebuild()
+
+logger = logging.getLogger(__name__)
 
 @author_router.post("/author", response_model=AuthorSchema, status_code=status.HTTP_201_CREATED)
 async def create_author(data: AuthorCreateSchema):
@@ -37,6 +40,10 @@ async def create_author(data: AuthorCreateSchema):
         return AuthorSchema.model_validate(author.object, from_attributes=True)
 
     except Exception as e:
+
+        logger.error(str(e))
+        logger.error(e.__traceback__)
+
         raise HTTPException(
             detail=str(e),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
