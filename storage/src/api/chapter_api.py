@@ -17,7 +17,7 @@ chapter_router = APIRouter(tags=["Chapters"])
 
 logger = logging.getLogger(__name__)
 
-# Dependency function for service injection
+
 async def get_chapter_service() -> AsyncGenerator[ChapterCRUDService, None]:
     async with AsyncUnitOfWork(database_url=settings.DATABASE_URL) as unit_of_work:
         repo = AsyncChapterRepository(unit_of_work.session)
