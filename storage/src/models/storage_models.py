@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 class Chapter(Base, BaseModelMixin, AsyncEagerLoadingMixin, SerializerMixin):
     __tablename__ = "chapters"
 
-    # Columns
     book_id: Mapped[uuid.UUID] = mapped_column()
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     number: Mapped[int] = mapped_column(SmallInteger, nullable=False)
@@ -43,40 +42,23 @@ class Chunk(Base, BaseModelMixin, AsyncEagerLoadingMixin, SerializerMixin):
     prev: Mapped["Chunk"] = relationship("Chunk", remote_side="Chunk.id", foreign_keys=[prev_chunk], post_update=True)
     next: Mapped["Chunk"] = relationship("Chunk", remote_side="Chunk.id", foreign_keys=[next_chunk], post_update=True)
 
-@event.listens_for(Chapter.prev, "set", propagate=True)
-def sync_next_chapter(target, value, oldvalue, initiator):
-    print(f"SET PREVIOUS for chapter {Chapter.id} {Chapter.prev}")
-    if value is not None:
-        value.next = target
 
-# @event.listens_for(Chapter.next, "set", propagate=True)
-# def sync_prev_chapter(target, value, oldvalue, initiator):
-#     if value is not None:
-#         value.next = target
+# @event.listens_for(Chapter.next, "set")
+# def set_next_chapter(target, value, oldvalue, initiator):
 
-# @event.listens_for(Chunk.prev, "set", propagate=True)
-# def sync_next_chunk(target, value, oldvalue, initiator):
-#     if value is not None:
-#         value.next = target
+#     logger.info("SET NEXT CHAPTER CALLED")
 
-# @event.listens_for(Chunk.next, "set", propagate=True)
-# def sync_prev_chunk(target, value, oldvalue, initiator):
-#     if value is not None:
-#         value.next = target
+#     if value and value != oldvalue:
+#         if oldvalue:
+#             oldvalue.next = None
+#         value.prev = target
 
-@event.listens_for(Chapter, "after_insert")
-def before_insert(mapper, connection, target):
-    logger.debug(f"MAPPER: {mapper}")
-    logger.debug(f"CONNECTION: {connection}")
-    logger.debug(f"TARGET: {target}")
-
-    logger.info(target.to_dict())
-
-    if target.prev:
-        target.prev.next = target
-    if target.next:
-        target.next.prev = target
-
+# @event.listens_for(Chapter.prev, "set")
+# def set_prev_chapter(target, value, oldvalue, initiator):
     
+#     logger.info("SET PREV CHAPTER CALLED")
 
-    
+#     if value and value != oldvalue:
+#         if oldvalue:
+#             oldvalue.prev = None
+#         value.next = target

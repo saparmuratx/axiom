@@ -9,14 +9,19 @@ class ChapterCRUDService(
 ):
     async def list_chapters(self, book_id: str | None = None):
         if book_id:
-            return await self.repository.list(filters=[self.repository.model.book_id == book_id])
-        return await self.list()
+            return await self.repository.list(filters={"book_id": book_id}, eager=True)
+        return await self.repository.list(eager=True)
 
     async def get_chapter(self, id: str):
         return await self.get(id)
 
-    async def create_chapter(self, data: ChapterCreateSchema):
-        return await self.create(data)
+    async def create_chapter(self, data: ChapterCreateSchema) -> ChapterCreateSchema:
+        chapter = await self.create(data)
+
+        await chapter.eager_load(self.repository.session)
+
+        return chapter
+    
 
     async def update_chapter(self, id: str, data: ChapterUpdateSchema):
         return await self.update(id, data)
