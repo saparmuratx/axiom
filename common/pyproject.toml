@@ -1,7 +1,7 @@
 [project]
 name = "axiom"
-version = "0.2.3"
-description = "Domain Driven library for FastAPI applications"
+version = "0.2.4"
+description = "DDD inspired library for FastAPI applications to reduce boilerplate code."
 readme = "README.md"
 requires-python = "==3.13.7"
 dependencies = [

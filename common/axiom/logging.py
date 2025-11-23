@@ -45,12 +45,12 @@ LOGGING_CONFIG = {
         "uvicorn": {
             "handlers": ["file", "console"],
             "level": "DEBUG",
-            "propagate": True,
+            "propagate": False,
         },
         "fastapi_cli": {
             "handlers": ["file", "console"],
             "level": "DEBUG",
-            "propagate": True,
+            "propagate": False,
         },
     },
 }
