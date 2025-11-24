@@ -56,7 +56,7 @@ wheels = [
 
 [[package]]
 name = "axiom"
-version = "0.2.4"
+version = "0.2.5"
 source = { registry = "https://pypi.axiomae.xyz/" }
 dependencies = [
     { name = "asyncpg" },
@@ -67,9 +67,9 @@ dependencies = [
     { name = "pyjwt" },
     { name = "sqlalchemy", extra = ["asyncio"] },
 ]
-sdist = { url = "https://pypi.axiomae.xyz/packages/axiom-0.2.4.tar.gz", hash = "sha256:97b7ca72f144500fea3ac8b9ca837cef54c57b033dac1bdcf1db91ff54db030a" }
+sdist = { url = "https://pypi.axiomae.xyz/packages/axiom-0.2.5.tar.gz", hash = "sha256:9cfb6ca771195bad369c48ea0d4453130faa836c8b8837796d36da6f2d3f4111" }
 wheels = [
-    { url = "https://pypi.axiomae.xyz/packages/axiom-0.2.4-py3-none-any.whl", hash = "sha256:b15fa69e60213b70647b6e5ff968844beadc899866a6e23535073bc41a74e458" },
+    { url = "https://pypi.axiomae.xyz/packages/axiom-0.2.5-py3-none-any.whl", hash = "sha256:05f775371374312152abe286249bceba354b2baa6a611085884919080e132053" },
 ]
 
 [[package]]
@@ -710,7 +710,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "alembic", specifier = ">=1.17.0" },
-    { name = "axiom", specifier = ">=0.2.4", index = "https://pypi.axiomae.xyz/" },
+    { name = "axiom", specifier = ">=0.2.5", index = "https://pypi.axiomae.xyz/" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.119.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.11" },
     { name = "pydantic", specifier = ">=2.12.3" },
