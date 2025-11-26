@@ -9,12 +9,12 @@ services:
       - ./auth/.env
     
   auth-db:
-    image: postgres:18
+    image: postgres:${POSTGRES_HASH}
     container_name: auth-db
     env_file:
     - ./auth/.env.postgres
     volumes:
-      - auth-db-data:/var/lib/postgresql/data
+      - auth-db-data:/var/lib/postgresql
     ports:
       - "127.0.0.1:${AUTH_DB_PORT}:${AUTH_DB_PORT}"
 
@@ -30,12 +30,12 @@ services:
       - ./library/.env
   
   library-db:
-    image: postgres:18
+    image: postgres:${POSTGRES_HASH}
     container_name: library-db
     env_file:
       - ./library/.env.postgres
     volumes:
-      - library-db-data:/var/lib/postgresql/data
+      - library-db-data:/var/lib/postgresql
     ports:
       - "127.0.0.1:${LIBRARY_DB_PORT}:${LIBRARY_DB_PORT}"    
     command: ["postgres", "-c", "port=${LIBRARY_DB_PORT}"]
@@ -50,24 +50,12 @@ services:
       - ./storage/.env
 
   storage-db:
-    image: cassandra:5.0.5
+    image: postgres:${POSTGRES_HASH}
     container_name: storage-db
-    hostname: storage-db
-    environment:
-      - CASSANDRA_CLUSTER_NAME=axiom
-    ports:
-      - "127.0.0.1:${CASSANDRA_PORT}:9042"
-    volumes:
-      - storage-db-data:/var/lib/cassandra
-      - ./storage/cassandra.yaml:/etc/cassandra/cassandra.yaml
-
-  storage-pg-db:
-    image: postgres:18
-    container_name: storage-pg-db
     env_file:
       - ./storage/.env.postgres
     volumes:
-      - storage-pg-db-data:/var/lib/postgresql/data
+      - storage-db-data:/var/lib/postgresql
     ports:
       - "127.0.0.1:${STORAGE_DB_PORT}:${STORAGE_DB_PORT}"
     command: ["postgres", "-c", "port=${STORAGE_DB_PORT}"]
@@ -77,4 +65,3 @@ volumes:
   auth-db-data:
   library-db-data:
   storage-db-data:
-  storage-pg-db-data:
