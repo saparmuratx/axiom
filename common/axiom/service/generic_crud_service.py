@@ -1,51 +1,52 @@
-# Updated File: axiom/service/generic_crud_service.py
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Any
+from axiom.repository import AsyncGenericRepository, GenericRepository
 
-TRepository = TypeVar("TRepository")
-CreateSchema = TypeVar("CreateSchema")
-ReadSchema = TypeVar("ReadSchema")
-UpdateSchema = TypeVar("UpdateSchema")
 
-class GenericCRUDService(Generic[TRepository, CreateSchema, ReadSchema, UpdateSchema]):
+TRepository = TypeVar("TRepository", bound=GenericRepository)
+TAsyncRepository = TypeVar("TAsyncRepository", bound=AsyncGenericRepository)
+
+
+class GenericCRUDService(Generic[TRepository]):
     def __init__(self, repository: TRepository):
         self.repository = repository
 
-    def get(self, id: str) -> ReadSchema:
-        return self.repository.get(id)
-
-    def get_by_field(self, field_name: str, value) -> ReadSchema:
-        return self.repository.get_by_field(field_name, value)
-
-    def create(self, data: CreateSchema) -> ReadSchema:
+    def create(self, data: dict[str, Any]):
         return self.repository.create(data)
 
-    def update(self, id: str, data: UpdateSchema) -> ReadSchema:
+    def retrieve(self, id: str):
+        return self.repository.get(id)
+
+    def get_by_field(self, field_name: str, value):
+        return self.repository.get_by_field(field_name, value)
+
+    def list(self, filters: dict[str, Any]) -> list | dict:
+        return self.repository.list(filters=filters)
+
+    def update(self, id: str, data: dict[str, Any]):
         return self.repository.update(id, data)
 
     def delete(self, id: str):
         return self.repository.delete(id)
 
-    def list(self, filters: dict = None) -> list[ReadSchema]:
-        return self.repository.list(filters=filters)
 
-class AsyncGenericCRUDService(Generic[TRepository, CreateSchema, ReadSchema, UpdateSchema]):
-    def __init__(self, repository: TRepository):
+class AsyncGenericCRUDService(Generic[TAsyncRepository]):
+    def __init__(self, repository: TAsyncRepository):
         self.repository = repository
 
-    async def get(self, id: str) -> ReadSchema:
-        return await self.repository.retrieve(id)
-
-    async def get_by_field(self, field_name: str, value) -> ReadSchema:
-        return await self.repository.get_by_field(field_name, value)
-
-    async def create(self, data: CreateSchema) -> CreateSchema:
+    async def create(self, data: dict[str, Any]):
         return await self.repository.create(data)
 
-    async def update(self, id: str, data: UpdateSchema) -> ReadSchema:
+    async def retrieve(self, id: str):
+        return await self.repository.retrieve(id)
+
+    async def get_by_field(self, field_name: str, value):
+        return await self.repository.get_by_field(field_name, value)
+
+    async def list(self, filters: dict[str, Any] | None = None) -> list | dict:
+        return await self.repository.list(filters=filters)
+
+    async def update(self, id: str, data: dict[str, Any]):
         return await self.repository.update(id, data)
 
     async def delete(self, id: str):
         return await self.repository.delete(id)
-
-    async def list(self, filters: dict = None) -> list[ReadSchema]:
-        return await self.repository.list(filters=filters)

@@ -23,8 +23,8 @@ LOGGING_CONFIG = {
             "class": "logging.handlers.TimedRotatingFileHandler",
             "when": "midnight",
             "interval": 1,
-            "backupCount": 30,  # Keep logs for 30 days
-            "filename": f"logs/log_{datetime.now().strftime('%d_%m_%Y')}.log",
+            "backupCount": 0,  # Keep logs for 30 days
+            "filename": "logs/app.log",
             "formatter": "standard",
             "level": "DEBUG",
             "encoding": "utf-8",
@@ -59,17 +59,17 @@ LOGGING_CONFIG = {
 FASTAPI_ROOT_LOGGER = {"handlers": ["default", "file"], "level": "INFO"}
 
 FASTAPI_STANDARD_FORMATTER = {
-        "format": "%(asctime)s %(levelname)s %(name)s: %(message)s",
-        "datefmt": "%Y-%m-%d %H:%M:%S %z",
-    }
+    "format": "%(asctime)s %(levelname)s %(name)s: %(message)s",
+    "datefmt": "%Y-%m-%d %H:%M:%S %z",
+}
 
 
 FASTAPI_FILE_HANDLER = {
     "class": "logging.handlers.TimedRotatingFileHandler",
     "when": "midnight",
     "interval": 1,
-    "backupCount": 30,
-    "filename": f"logs/log_{datetime.now().strftime('%d_%m_%Y')}.log",
+    "backupCount": 0,
+    "filename": "logs/app.log",
     "formatter": "standard",
     "level": "DEBUG",
     "encoding": "utf-8",

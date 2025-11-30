@@ -1,0 +1,17 @@
+FILTER_MAP = {
+    "exact": lambda column, value: column == value,
+    "iexact": lambda column, value: column.ilike(value),
+    "contains": lambda column, value: column.contains(value),
+    "icontains": lambda column, value: column.ilike(f"%{value}%"),
+    "startswith": lambda column, value: column.ilike(f"{value}%"),
+    "istartswith": lambda column, value: column.ilike(f"{value}%"),
+    "endswith": lambda column, value: column.ilike(f"%{value}"),
+    "iendswith": lambda column, value: column.ilike(f"%{value}"),
+    "in": lambda column, value: column.in_(value) if value else True,
+    "notin": lambda column, value: column.not_in(value) if value else True,
+    "gt": lambda column, value: column > value,
+    "gte": lambda column, value: column >= value,
+    "lt": lambda column, value: column < value,
+    "lte": lambda column, value: column <= value,
+    "isnull": lambda column, value: column.is_(None) if value else column.is_not(None),
+}

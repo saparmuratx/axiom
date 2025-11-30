@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
+
 class UnitOfWork:
     def __init__(self, database_url: str):
         self.database_url = database_url
