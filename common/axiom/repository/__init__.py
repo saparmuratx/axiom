@@ -3,5 +3,5 @@ from axiom.repository.generic_repository import (
     GenericRepository,
 )
 
-from exceptions import NotFoundException
-from unit_of_work import UnitOfWork, AsyncUnitOfWork
+from axiom.repository.exceptions import NotFoundException
+from axiom.repository.unit_of_work import UnitOfWork, AsyncUnitOfWork

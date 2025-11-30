@@ -6,7 +6,7 @@ from fastapi.requests import Request
 from fastapi.exceptions import HTTPException
 from fastapi.security import SecurityScopes
 
-from axiom.service.jwt_service import JWTService
+from axiom.services.jwt_service import JWTService
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class JWTBearerAuthentication:
             JWTService,
             Doc(
                 """
-                    Instance of `axiom.service.jwt_service.JWTService`. 
+                    Instance of `axiom.services.jwt_service.JWTService`. 
                     Used for validation JWT Bearer Token.
                 """
             ),
@@ -42,11 +42,11 @@ class JWTBearerAuthentication:
             authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
         else:
             authenticate_value = "Bearer"
-            
+
         credentials_exception = HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
-                headers={"WWW-Authenticate": authenticate_value},
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": authenticate_value},
         )
 
         if not bearer_token or not bearer_token.startswith("Bearer "):
@@ -56,8 +56,10 @@ class JWTBearerAuthentication:
         else:
             try:
                 token = bearer_token.split(" ")[1].strip()
-                token_payload = self.jwt_service.validate_token(token=token, aud=self.aud)
- 
+                token_payload = self.jwt_service.validate_token(
+                    token=token, aud=self.aud
+                )
+
                 request.state.user_id = token_payload["sub"]
                 request.state.scope = token_payload.get("scope", "user")
 
@@ -66,11 +68,13 @@ class JWTBearerAuthentication:
                 raise credentials_exception
 
         if security_scopes.scopes and request.state.scope not in security_scopes.scopes:
-                logger.error(f"Not enough permissions for User(id={request.state.user_id}) with scope={request.state.scope}")
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Not enough permissions",
-                    headers={"WWW-Authenticate": authenticate_value},
-                )
+            logger.error(
+                f"Not enough permissions for User(id={request.state.user_id}) with scope={request.state.scope}"
+            )
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not enough permissions",
+                headers={"WWW-Authenticate": authenticate_value},
+            )
 
         return request.state.user_id

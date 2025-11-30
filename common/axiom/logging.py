@@ -1,7 +1,6 @@
 import os
 from logging.config import dictConfig
 from fastapi_cli.utils.cli import get_uvicorn_log_config
-from datetime import datetime
 
 
 LOGGING_CONFIG = {
@@ -23,7 +22,7 @@ LOGGING_CONFIG = {
             "class": "logging.handlers.TimedRotatingFileHandler",
             "when": "midnight",
             "interval": 1,
-            "backupCount": 0,  # Keep logs for 30 days
+            "backupCount": 30,  # Keep logs for 30 days
             "filename": "logs/app.log",
             "formatter": "standard",
             "level": "DEBUG",
@@ -68,7 +67,7 @@ FASTAPI_FILE_HANDLER = {
     "class": "logging.handlers.TimedRotatingFileHandler",
     "when": "midnight",
     "interval": 1,
-    "backupCount": 0,
+    "backupCount": 30,
     "filename": "logs/app.log",
     "formatter": "standard",
     "level": "DEBUG",
