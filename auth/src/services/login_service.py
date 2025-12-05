@@ -1,7 +1,7 @@
 from src.repository.user_repository import UserRepository, AsyncUserRepository
 
 from src.services.password_service import PasswordService
-from axiom.service.jwt_service import JWTService
+from axiom.services.jwt_service import JWTService
 from src.services.service_exception import (
     InvalidPasswordException,
     UserNotActiveException,
@@ -52,6 +52,7 @@ class LoginUserService:
 
         return token, user
 
+
 class AsyncLoginUserService:
     def __init__(
         self,
@@ -75,7 +76,7 @@ class AsyncLoginUserService:
             raise InvalidPasswordException
 
         now = datetime.now()
-        
+
         payload = {
             "iss": str(settings.SITE_URL),
             "sub": str(user.id),

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, ConfigDict, UUID4, Field
 
-from axiom.schema.schema_mixins import DBObjectMixin
+from axiom.schemas.schema_mixins import DBObjectMixin
 
 from src.schemas.schema_mixins import UUIDTimeStampMixin
 from src.schemas.role_schemas import RoleSchema
@@ -18,7 +18,7 @@ class UserCreateSchema(BaseModel):
     )
 
 
-class UserCreateResponseSchema(BaseModel, DBObjectMixin):
+class UserCreateResponseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     email: EmailStr

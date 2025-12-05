@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.exc import IntegrityError
 
-from axiom.service.jwt_service import JWTService
- 
+from axiom.services.jwt_service import JWTService
+
 from src.config import settings
 
 from src.schemas.user_schemas import UserCreateSchema

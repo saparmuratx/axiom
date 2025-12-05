@@ -1,10 +1,14 @@
-from axiom.service.generic_crud_service import AsyncGenericCRUDService
+from axiom.services.generic_crud_service import AsyncGenericCRUDService
 
 from src.repository.book_repository import AsyncBookRepository
 from src.schemas.book_schemas import BookCreateSchema, BookSchema, BookUpdateSchema
 
 
-class BookCRUDService(AsyncGenericCRUDService[AsyncBookRepository, BookCreateSchema, BookSchema, BookUpdateSchema]):
+class BookCRUDService(
+    AsyncGenericCRUDService[
+        AsyncBookRepository, BookCreateSchema, BookSchema, BookUpdateSchema
+    ]
+):
     async def list_books(self):
         return await self.list()
 
@@ -18,4 +22,4 @@ class BookCRUDService(AsyncGenericCRUDService[AsyncBookRepository, BookCreateSch
         return await self.update(id, data)
 
     async def delete_book(self, id: str):
-        await self.delete(id)   
+        await self.delete(id)

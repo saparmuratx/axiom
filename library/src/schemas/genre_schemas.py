@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
 
-from axiom.schema.schema_mixins import DBObjectMixin, UUIDTimeStampMixin
+from axiom.schemas.schema_mixins import UUIDTimeStampMixin
 
 if TYPE_CHECKING:
     from src.schemas.book_schemas import BookInlineSchema
@@ -14,12 +14,10 @@ class GenreBaseSchema(BaseModel):
     description: str
 
 
-class GenreInlineSchema(DBObjectMixin, UUIDTimeStampMixin, GenreBaseSchema):
+class GenreInlineSchema(UUIDTimeStampMixin, GenreBaseSchema):
     pass
 
 
-class GenreSchema(DBObjectMixin, UUIDTimeStampMixin, GenreBaseSchema):
+class GenreSchema(UUIDTimeStampMixin, GenreBaseSchema):
     # books: list["BookInlineSchema"]
     pass
-
-

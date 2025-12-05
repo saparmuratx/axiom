@@ -1,55 +1,43 @@
-from typing import Optional, List
+from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict
 from pydantic.types import UUID4
 
 
-from axiom.schema.schema_mixins import UUIDTimeStampMixin, DBObjectMixin
+from axiom.schemas import UUIDTimeStampMixin
 
 
 class ChapterBaseSchema(BaseModel):
-    title: Optional[str] = None
-    number: Optional[int] = None
-    prev_chapter: Optional[UUID4] = None
-    next_chapter: Optional[UUID4] = None
-
-
-class ChapterInlineSchema(DBObjectMixin, UUIDTimeStampMixin, ChapterBaseSchema):
-    class Config:
-        from_attributes = True
-
-
-class ChapterInlineAltSchema(DBObjectMixin, UUIDTimeStampMixin, BaseModel):
     title: str | None = None
     number: int | None = None
     prev_chapter: UUID4 | None = None
-    next_chapter: UUID4 | None = None
-    book_id: UUID4 | None = None
-    
-    class Config:
-        from_attributes = True
+    # next_chapter: UUID4 | None = None
 
 
-class ChapterCreateSchema(DBObjectMixin, ChapterBaseSchema):
+class ChapterCreateSchema(ChapterBaseSchema):
     book_id: UUID4
 
 
-class ChapterCreateResponseSchema(UUIDTimeStampMixin, ChapterCreateSchema):
-    prev: ChapterInlineAltSchema | None = None
-    next: ChapterInlineAltSchema | None = None
-
-    class Config:
-        from_attributes = True
-        
-
-class ChapterUpdateSchema(DBObjectMixin, BaseModel):
+class ChapterUpdateSchema(BaseModel):
     title: str | None = None
     number: int | None = None
     prev_chapter: UUID4 | None = None
-    next_chapter: UUID4 | None = None
-
-    model_config = ConfigDict(exclude_unset=True)
+    # next_chapter: UUID4 | None = None
 
 
-class ChapterSchema(DBObjectMixin, UUIDTimeStampMixin, ChapterBaseSchema):
+class ChapterInlineSchema(UUIDTimeStampMixin, BaseModel):
+    title: str | None = None
+    number: int | None = None
+    prev_chapter: UUID4 | None = None
+    # next_chapter: UUID4 | None = None
     book_id: UUID4
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ChapterReadSchema(UUIDTimeStampMixin, ChapterBaseSchema):
+    book_id: UUID4
+    prev: ChapterInlineSchema | None = None
+    # next: ChapterInlineSchema | None = None
+
+    model_config = ConfigDict(from_attributes=True)
