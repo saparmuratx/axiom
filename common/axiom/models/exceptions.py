@@ -1,2 +1,0 @@
-class NotEagerLoadedError(Exception):
-    pass
